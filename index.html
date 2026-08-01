@@ -67,7 +67,7 @@
           <i class="fa-solid fa-layer-group text-blue-500 text-xl"></i>
         </div>
         <div>
-          <h1 class="text-xl font-bold tracking-tight">Dashboard Layanan Bidang SMP</h1>
+          <h1 class="text-xl font-bold tracking-tight">Dashboard Aplikasi Bidang SMP</h1>
           <p id="user-greeting" class="text-xs text-slate-400 mt-0.5">Selamat datang</p>
         </div>
       </div>
@@ -99,7 +99,6 @@
 
   <!-- ================= 3. IFRAME VIEWER DENGAN TOP BAR COPY ================= -->
   <section id="viewer-section" class="hidden-section fixed inset-0 bg-slate-950 flex flex-col z-40">
-    <!-- Top Bar (Diberi padding px-6 sm:px-8 agar ada ruang kosong di kiri & kanan) -->
     <div class="bg-slate-800 px-6 sm:px-8 py-3 flex flex-wrap justify-between items-center border-b border-slate-700 gap-3">
       <div class="flex items-center space-x-3">
         <button onclick="closeViewer()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs sm:text-sm font-medium transition flex items-center shadow-sm">
@@ -108,7 +107,6 @@
         <span id="viewer-title" class="font-bold text-slate-100 text-sm sm:text-base truncate max-w-[200px] sm:max-w-md">Nama Aplikasi</span>
       </div>
 
-      <!-- Kredensial (Diberi margin kanan sm:mr-6 agar berjarak ~1.5 - 2 cm dari pinggir) -->
       <div id="viewer-credentials" class="flex items-center space-x-3 text-sm mr-2 sm:mr-6">
         <div id="box-user" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-1.5 space-x-2.5 shadow-md">
           <span class="text-slate-400">User: <strong class="text-slate-100 font-mono tracking-wide">••••••</strong></span>
@@ -308,16 +306,112 @@
     </div>
   </div>
 
+  <!-- ================= 10. MODAL PERINGATAN TIMEOUT 30 DETIK ================= -->
+  <div id="modal-timeout" class="hidden-section fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50 fade-in">
+    <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl border-2 border-amber-500 w-full max-w-md text-center shadow-2xl shadow-amber-500/10">
+      <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl animate-pulse">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-100 mb-2">Sesi Anda Akan Habis!</h3>
+      <p class="text-sm text-slate-300 mb-4">
+        Sesi Anda akan berakhir dalam <span id="countdown-text" class="text-amber-400 font-bold text-lg">30</span> detik karena tidak ada aktivitas.
+      </p>
+      
+      <button type="button" onclick="extendSession()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-lg text-sm">
+        <i class="fa-solid fa-rotate-right mr-1.5"></i> [Klik di sini untuk perpanjang]
+      </button>
+    </div>
+  </div>
+
   <!-- ================= JAVASCRIPT ================= -->
   <script>
     // ---> GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI <---
     const API_URL = "https://script.google.com/macros/s/AKfycby-q_K7jlsL-rpjd1o_NvljscOAN8uU8JqLqthZ6AAdCSQfiHgjZYVfSSxj2Y8TebAQ/exec";
+
+    const SESSION_KEY = "smp_portal_user";
+    const IDLE_LIMIT = 14 * 60 * 1000 + 30 * 1000; // 14 menit 30 detik
+    const WARNING_TIME = 30; // 30 detik peringatan
 
     let currentUser = null;
     let appsData = [];
     let usersData = [];
     let activeAppCredentials = { user: "", pass: "" };
 
+    let inactivityTimer = null;
+    let countdownInterval = null;
+    let remainingSeconds = WARNING_TIME;
+    let isWarningShowing = false;
+
+    // --- CEK SESI SAAT REFRESH HALAMAN (LOCALSTORAGE) ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedUser = localStorage.getItem(SESSION_KEY);
+      if (savedUser) {
+        try {
+          currentUser = JSON.parse(savedUser);
+          document.getElementById('user-greeting').innerText = `Halo, ${currentUser.name} (${currentUser.role})`;
+          
+          if (currentUser.role === "SuperAdmin") {
+            document.getElementById('btn-manage-users').classList.remove('hidden-section');
+            document.getElementById('btn-add-modal').classList.remove('hidden-section');
+            checkPendingUsers();
+          }
+
+          showSection('dashboard-section');
+          loadApps();
+          startInactivityMonitor();
+        } catch (e) {
+          localStorage.removeItem(SESSION_KEY);
+        }
+      }
+    });
+
+    // --- TIMER INAKTIVITAS (15 MENIT) ---
+    function startInactivityMonitor() {
+      ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
+        window.addEventListener(evt, resetInactivityTimer, true);
+      });
+      resetInactivityTimer();
+    }
+
+    function resetInactivityTimer() {
+      if (isWarningShowing) return;
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(showTimeoutWarning, IDLE_LIMIT);
+    }
+
+    function showTimeoutWarning() {
+      isWarningShowing = true;
+      remainingSeconds = WARNING_TIME;
+      document.getElementById('countdown-text').innerText = remainingSeconds;
+      openModal('modal-timeout');
+
+      clearInterval(countdownInterval);
+      countdownInterval = setInterval(() => {
+        remainingSeconds--;
+        document.getElementById('countdown-text').innerText = remainingSeconds;
+
+        if (remainingSeconds <= 0) {
+          clearInterval(countdownInterval);
+          closeModal('modal-timeout');
+          autoLogoutDueToInactivity();
+        }
+      }, 1000);
+    }
+
+    function extendSession() {
+      isWarningShowing = false;
+      clearInterval(countdownInterval);
+      closeModal('modal-timeout');
+      resetInactivityTimer();
+      showToast("Sesi berhasil diperpanjang 15 menit ke depan.", "info");
+    }
+
+    function autoLogoutDueToInactivity() {
+      logout();
+      showToast("Anda telah otomatis keluar karena tidak ada aktivitas selama 15 menit.", "error");
+    }
+
+    // --- HELPER UI ---
     function showSection(sectionId) {
       document.getElementById('login-section').classList.add('hidden-section');
       document.getElementById('dashboard-section').classList.add('hidden-section');
@@ -393,6 +487,7 @@
 
         if (res.success) {
           currentUser = res.user;
+          localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); // Simpan sesi
           document.getElementById('user-greeting').innerText = `Halo, ${currentUser.name} (${currentUser.role})`;
           
           if (currentUser.role === "SuperAdmin") {
@@ -404,6 +499,7 @@
           showToast("Berhasil masuk ke portal!");
           showSection('dashboard-section');
           loadApps();
+          startInactivityMonitor();
         } else {
           showToast(res.message, "error");
         }
@@ -702,7 +798,6 @@
       }
     }
 
-    // EDIT USER (NAMA, USERNAME, PASSWORD, ROLE, STATUS)
     function openEditUser(username) {
       const user = usersData.find(u => u.username === username);
       if (!user) return;
@@ -851,10 +946,16 @@
 
     function logout() {
       currentUser = null;
+      isWarningShowing = false;
+      clearTimeout(inactivityTimer);
+      clearInterval(countdownInterval);
+      localStorage.removeItem(SESSION_KEY); // Bersihkan sesi dari browser
+
       document.getElementById('username').value = "";
       document.getElementById('password').value = "";
       document.getElementById('btn-manage-users').classList.add('hidden-section');
       document.getElementById('btn-add-modal').classList.add('hidden-section');
+      closeViewer();
       showSection('login-section');
       showToast("Anda telah keluar dari portal.", "info");
     }
