@@ -1151,7 +1151,7 @@
         const catBox = document.createElement('div');
         catBox.className = "bg-slate-900/90 border border-slate-700/80 rounded-xl p-3";
 
-        // Checkbox Induk (Kategori)
+        // 1. Buat Checkbox Induk (Kategori)
         const parentLabel = document.createElement('label');
         parentLabel.className = "flex items-center space-x-2.5 font-bold text-slate-100 cursor-pointer pb-2.5 border-b border-slate-800";
         parentLabel.innerHTML = `
@@ -1162,7 +1162,7 @@
         `;
         catBox.appendChild(parentLabel);
 
-        // Checkbox Anak (Daftar Aplikasi dalam Kategori)
+        // 2. Buat Checkbox Anak (Daftar Aplikasi dalam Kategori)
         const childContainer = document.createElement('div');
         childContainer.className = "space-y-2 pt-2.5 pl-6";
 
@@ -1179,21 +1179,24 @@
         });
 
         catBox.appendChild(childContainer);
-        container.appendChild(catBox);
+        container.appendChild(catBox); // PENTING: Masukkan ke DOM layar terlebih dahulu!
 
-        // Event Listener: Klik Kategori -> Centang/Hapus semua anak di bawahnya
+        // 3. Pasang Event Listener SETELAH elemen masuk ke DOM
         const parentCheckbox = catBox.querySelector(`#cat-checkbox-${catName}`);
-        parentCheckbox.addEventListener('change', (e) => {
-          const childBoxes = catBox.querySelectorAll('input[name="rbac-app-item"]');
-          childBoxes.forEach(cb => { cb.checked = e.target.checked; });
-        });
-
-        // Event Listener: Klik Anak -> Update status centang Kategori (induk)
         const childBoxes = catBox.querySelectorAll('input[name="rbac-app-item"]');
+
+        if (parentCheckbox) {
+          parentCheckbox.addEventListener('change', (e) => {
+            childBoxes.forEach(cb => { cb.checked = e.target.checked; });
+          });
+        }
+
         childBoxes.forEach(cb => {
           cb.addEventListener('change', () => {
             const allCatChildren = Array.from(catBox.querySelectorAll('input[name="rbac-app-item"]'));
-            parentCheckbox.checked = allCatChildren.every(c => c.checked);
+            if (parentCheckbox) {
+              parentCheckbox.checked = allCatChildren.every(c => c.checked);
+            }
           });
         });
       });
