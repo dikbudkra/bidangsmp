@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Aplikasi SMP - Bidang Pembinaan & Layanan</title>
+  <title>Layanan Bidang SMP - Dinas Pendidikan & Kebudayaan Karanganyar</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -23,19 +23,22 @@
   <!-- ================= TOAST NOTIFICATIONS ================= -->
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
-  <!-- ================= 1. HALAMAN LOGIN (1 LAYAR TERKUNCI & SAFE MOBILE) ================= -->
+  <!-- ================= 1. HALAMAN LOGIN ================= -->
   <section id="login-section" class="flex-1 flex flex-col justify-between items-center p-4 fade-in overflow-y-auto">
-    <!-- Spacer atas agar form ke tengah -->
+    <!-- Spacer atas -->
     <div class="w-full"></div>
 
-    <!-- Kotak Login -->
+    <!-- Kotak Login Resmi -->
     <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md my-auto">
       <div class="text-center mb-6">
-        <div class="inline-flex p-3 bg-blue-500/10 rounded-2xl mb-3 border border-blue-500/20">
-          <i class="fa-solid fa-school text-blue-500 text-3xl"></i>
+        <div class="inline-block p-2.5 bg-slate-900/80 rounded-2xl mb-3 border border-slate-700">
+          <!-- Logo Resmi Kabupaten Karanganyar -->
+          <img src="https://lh3.googleusercontent.com/d/1e1LH5ZgYyLjclSNXwMAU5Zy_PKiju5z-" 
+               alt="Logo Kabupaten Karanganyar" 
+               class="h-16 w-16 sm:h-20 sm:w-20 object-contain mx-auto">
         </div>
-        <h1 class="text-2xl font-bold">Portal Aplikasi SMP</h1>
-        <p class="text-slate-400 text-sm mt-1">Satu pintu untuk seluruh layanan aplikasi</p>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">LAYANAN BIDANG SMP</h1>
+        <p class="text-slate-400 text-xs sm:text-sm mt-1">Dinas Pendidikan dan Kebudayaan Karanganyar</p>
       </div>
 
       <form id="login-form" class="space-y-4">
@@ -68,7 +71,7 @@
       </div>
     </div>
 
-    <!-- Footer Signature di Login Page (Responsive text-xs untuk HP, text-sm untuk Laptop) -->
+    <!-- Footer Signature di Login Page (Mobile-Safe) -->
     <footer class="w-full text-center py-4 text-[11px] sm:text-sm font-medium tracking-wider text-slate-500 whitespace-nowrap">
       DIGITALLY SHAPED BY 
       <img src="https://i.ibb.co.com/KpqwmHd6/Logo-Jemprot-2-1-removebg-preview.png" 
@@ -80,51 +83,64 @@
 
   <!-- ================= 2. DASHBOARD GRID (1 LAYAR TERKUNCI) ================= -->
   <section id="dashboard-section" class="hidden-section flex-1 flex flex-col h-full overflow-hidden max-w-7xl w-full mx-auto px-3 sm:px-6 pt-3 sm:pt-6 fade-in">
-    <!-- ZONE 1: HEADER (TETAP / FIXED) -->
+    <!-- ZONE 1: HEADER RESMI INSTANSI & USER BADGE (FIXED) -->
     <header class="flex-none flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 sm:mb-4 bg-slate-800/80 p-4 sm:p-5 rounded-2xl border border-slate-700/80 gap-3 sm:gap-4">
-      <div class="flex items-center space-x-3">
-        <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20">
-          <i class="fa-solid fa-layer-group text-blue-500 text-xl"></i>
+      <!-- Kiri: Identitas Dinas & Logo Karanganyar -->
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <div class="p-1.5 sm:p-2 bg-slate-900/80 rounded-xl border border-slate-700 flex-shrink-0">
+          <img src="https://lh3.googleusercontent.com/d/1e1LH5ZgYyLjclSNXwMAU5Zy_PKiju5z-" 
+               alt="Logo Kabupaten Karanganyar" 
+               class="h-10 w-10 sm:h-12 sm:w-12 object-contain">
         </div>
         <div>
-          <h1 class="text-lg sm:text-xl font-bold tracking-tight">Dashboard Aplikasi Bidang SMP</h1>
-          <p id="user-greeting" class="text-xs text-slate-400 mt-0.5">Selamat datang</p>
+          <h1 class="text-base sm:text-xl font-bold tracking-tight text-slate-100">DASHBOARD APLIKASI BIDANG SMP</h1>
+          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Dinas Pendidikan dan Kebudayaan Karanganyar</p>
         </div>
       </div>
 
-      <!-- Tombol Admin Responsif: Grid 2 kolom di HP, sejajar horizontal di Laptop -->
-      <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2.5 w-full lg:w-auto justify-end">
-        <button id="btn-manage-users" onclick="openUserManager()" class="hidden-section relative px-3 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
-          <i class="fa-solid fa-users-gear mr-1.5"></i> Kelola User
-          <span id="pending-badge" class="hidden-section absolute -top-1.5 -right-1.5 px-1.5 py-0.5 bg-rose-500 text-white font-bold rounded-full text-[10px]">0</span>
-        </button>
-        <button id="btn-reorder-modal" onclick="openReorderModal()" class="hidden-section px-3 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
-          <i class="fa-solid fa-arrow-down-up-across-line mr-1.5"></i> Atur Urutan
-        </button>
-        <button id="btn-add-modal" onclick="openAppModal()" class="hidden-section px-3 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
-          <i class="fa-solid fa-plus mr-1.5"></i> Tambah Aplikasi
-        </button>
-        <button onclick="logout()" class="px-3 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
-          <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Keluar
-        </button>
+      <!-- Kanan: Lencana User & Kontrol Admin -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-2.5 w-full lg:w-auto">
+        <!-- Pill Badge User -->
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 bg-slate-900/90 border border-slate-700 rounded-full text-xs font-medium text-slate-300 shadow-inner">
+          <i class="fa-solid fa-user-shield text-blue-400"></i>
+          <span id="user-greeting">Halo, Pengguna</span>
+        </div>
+
+        <!-- Tombol Aksi Admin -->
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+          <button id="btn-manage-users" onclick="openUserManager()" class="hidden-section relative px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-users-gear mr-1.5"></i> Kelola User
+            <span id="pending-badge" class="hidden-section absolute -top-1.5 -right-1.5 px-1.5 py-0.5 bg-rose-500 text-white font-bold rounded-full text-[10px]">0</span>
+          </button>
+          <button id="btn-reorder-modal" onclick="openReorderModal()" class="hidden-section px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-arrow-down-up-across-line mr-1.5"></i> Atur Urutan
+          </button>
+          <button onclick="logout()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
+            <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Keluar
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- ZONE 2: PENCARIAN (TETAP / FIXED) -->
-    <div class="flex-none mb-3 sm:mb-4">
-      <div class="relative max-w-md">
+    <!-- ZONE 2: ACTION BAR - PENCARIAN & TAMBAH APLIKASI (OPSI 2 - FIXED) -->
+    <div class="flex-none mb-3 sm:mb-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2.5">
+      <div class="relative flex-1 max-w-md">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
         <input type="text" id="search-input" placeholder="Cari aplikasi (misal: SPMB, Revit, DU)..." 
                class="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl focus:outline-none focus:border-blue-500 text-sm text-slate-100 transition">
       </div>
+
+      <button id="btn-add-modal" onclick="openAppModal()" class="hidden-section px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs sm:text-sm rounded-xl transition flex items-center justify-center shadow-lg shadow-emerald-600/20">
+        <i class="fa-solid fa-plus mr-2"></i> Tambah Aplikasi Baru
+      </button>
     </div>
 
-    <!-- ZONE 3: AREA APLIKASI (BISA DI-SCROLL NAIK-TURUN / ACCORDION) -->
+    <!-- ZONE 3: AREA APLIKASI (ACCORDION - BISA DI-SCROLL NAIK-TURUN) -->
     <div id="apps-container" class="flex-1 overflow-y-auto pr-1 pb-4 space-y-4 sm:space-y-5">
       <!-- Daftar Kategori & Kartu Aplikasi dimuat via JS -->
     </div>
 
-    <!-- ZONE 4: FOOTER SIGNATURE DASHBOARD (TETAP / FIXED) -->
+    <!-- ZONE 4: FOOTER SIGNATURE DASHBOARD (FIXED & MOBILE-SAFE) -->
     <footer class="flex-none border-t border-slate-800 py-3 sm:py-3.5 text-center text-[11px] sm:text-sm font-medium tracking-wider text-slate-500 whitespace-nowrap">
       DIGITALLY SHAPED BY 
       <img src="https://i.ibb.co.com/KpqwmHd6/Logo-Jemprot-2-1-removebg-preview.png" 
@@ -309,7 +325,7 @@
     </div>
   </div>
 
-  <!-- ================= 8. MODAL RBAC BERTINGKAT (PARENT-CHILD & PILIH SEMUA) ================= -->
+  <!-- ================= 8. MODAL HAK AKSES BERTINGKAT ================= -->
   <div id="modal-rbac" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-lg flex flex-col max-h-[85vh]">
       <div class="flex justify-between items-center mb-1 border-b border-slate-700 pb-3">
@@ -400,7 +416,7 @@
 
   <!-- ================= JAVASCRIPT ================= -->
   <script>
-    // URL WEB APP GOOGLE APPS SCRIPT TERBARU ANDA:
+    // URL WEB APP GOOGLE APPS SCRIPT:
     const API_URL = "https://script.google.com/macros/s/AKfycby0EUthoDk5dHBe1W0e5ypY8_LbVrH-2izsCyYhDgX9NLwXw8iOkU_bjC9rQxX66S14/exec";
 
     const SESSION_KEY = "smp_portal_user";
@@ -701,7 +717,7 @@
 
         section.appendChild(headerBtn);
 
-        // Grid Kartu: 2 kolom di HP (grid-cols-2), 3 atau 4 kolom di Laptop/PC
+        // Grid Kartu: 2 kolom di HP, 3 atau 4 kolom di Laptop/PC
         const grid = document.createElement('div');
         grid.className = `grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 transition-all duration-200 ${isExpanded ? '' : 'hidden-section'}`;
 
