@@ -1161,14 +1161,17 @@
         const appsInCat = grouped[catName];
         const allChecked = appsInCat.every(app => userAllowedArray.includes(app.id));
 
+        // BUAT ID YANG AMAN DARI SPASI (misal: "Guru Pengganti" -> "Guru_Pengganti")
+        const safeCatId = catName.replace(/[^a-zA-Z0-9]/g, '_');
+
         const catBox = document.createElement('div');
         catBox.className = "bg-slate-900/90 border border-slate-700/80 rounded-xl p-3";
 
-        // 1. Buat Checkbox Induk (Kategori)
+        // 1. Buat Checkbox Induk (Kategori) dengan ID yang aman
         const parentLabel = document.createElement('label');
         parentLabel.className = "flex items-center space-x-2.5 font-bold text-slate-100 cursor-pointer pb-2.5 border-b border-slate-800";
         parentLabel.innerHTML = `
-          <input type="checkbox" id="cat-checkbox-${catName}" ${allChecked ? 'checked' : ''} 
+          <input type="checkbox" id="cat-checkbox-${safeCatId}" ${allChecked ? 'checked' : ''} 
                  class="w-4 h-4 rounded border-slate-600 text-blue-600 focus:ring-0 bg-slate-800">
           <span class="text-sm">${catName}</span>
           <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded ml-auto">(${appsInCat.length} Layanan)</span>
@@ -1192,10 +1195,10 @@
         });
 
         catBox.appendChild(childContainer);
-        container.appendChild(catBox); // PENTING: Masukkan ke DOM layar terlebih dahulu!
+        container.appendChild(catBox);
 
-        // 3. Pasang Event Listener SETELAH elemen masuk ke DOM
-        const parentCheckbox = catBox.querySelector(`#cat-checkbox-${catName}`);
+        // 3. Pasang Event Listener menggunakan safeCatId
+        const parentCheckbox = catBox.querySelector(`#cat-checkbox-${safeCatId}`);
         const childBoxes = catBox.querySelectorAll('input[name="rbac-app-item"]');
 
         if (parentCheckbox) {
@@ -1216,7 +1219,6 @@
 
       openModal('modal-rbac');
     }
-
     // Fungsi Pilih Semua / Hapus Semua di Modal RBAC
     function selectAllRBAC(checkStatus) {
       document.querySelectorAll('#rbac-checkbox-list input[type="checkbox"]').forEach(cb => {
