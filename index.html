@@ -99,25 +99,27 @@
 
   <!-- ================= 3. IFRAME VIEWER DENGAN TOP BAR COPY ================= -->
   <section id="viewer-section" class="hidden-section fixed inset-0 bg-slate-950 flex flex-col z-40">
-    <div class="bg-slate-800 px-4 py-2.5 flex flex-wrap justify-between items-center border-b border-slate-700 gap-2">
+    <!-- Top Bar (Diberi padding px-6 sm:px-8 agar ada ruang kosong di kiri & kanan) -->
+    <div class="bg-slate-800 px-6 sm:px-8 py-3 flex flex-wrap justify-between items-center border-b border-slate-700 gap-3">
       <div class="flex items-center space-x-3">
-        <button onclick="closeViewer()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-medium transition flex items-center">
-          <i class="fa-solid fa-arrow-left mr-1.5"></i> Kembali
+        <button onclick="closeViewer()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs sm:text-sm font-medium transition flex items-center shadow-sm">
+          <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
         </button>
-        <span id="viewer-title" class="font-semibold text-slate-200 text-sm truncate max-w-[200px] sm:max-w-md">Nama Aplikasi</span>
+        <span id="viewer-title" class="font-bold text-slate-100 text-sm sm:text-base truncate max-w-[200px] sm:max-w-md">Nama Aplikasi</span>
       </div>
 
-      <div id="viewer-credentials" class="flex items-center space-x-2 text-xs">
-        <div id="box-user" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 space-x-2">
-          <span class="text-slate-400">User: <strong class="text-slate-200">••••••</strong></span>
-          <button type="button" id="btn-copy-user" onclick="copyCredential('user')" class="text-slate-400 hover:text-blue-400 transition" title="Salin Username">
+      <!-- Kredensial (Diberi margin kanan sm:mr-6 agar berjarak ~1.5 - 2 cm dari pinggir) -->
+      <div id="viewer-credentials" class="flex items-center space-x-3 text-sm mr-2 sm:mr-6">
+        <div id="box-user" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-1.5 space-x-2.5 shadow-md">
+          <span class="text-slate-400">User: <strong class="text-slate-100 font-mono tracking-wide">••••••</strong></span>
+          <button type="button" id="btn-copy-user" onclick="copyCredential('user')" class="text-slate-400 hover:text-blue-400 transition text-base pl-1" title="Salin Username">
             <i class="fa-regular fa-copy"></i>
           </button>
         </div>
 
-        <div id="box-pass" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 space-x-2">
-          <span class="text-slate-400">Pass: <strong class="text-slate-200">••••••</strong></span>
-          <button type="button" id="btn-copy-pass" onclick="copyCredential('pass')" class="text-slate-400 hover:text-blue-400 transition" title="Salin Password">
+        <div id="box-pass" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-xl px-3.5 py-1.5 space-x-2.5 shadow-md">
+          <span class="text-slate-400">Pass: <strong class="text-slate-100 font-mono tracking-wide">••••••</strong></span>
+          <button type="button" id="btn-copy-pass" onclick="copyCredential('pass')" class="text-slate-400 hover:text-blue-400 transition text-base pl-1" title="Salin Password">
             <i class="fa-regular fa-copy"></i>
           </button>
         </div>
