@@ -10,6 +10,8 @@
     .hidden-section { display: none !important; }
     .fade-in { animation: fadeIn 0.2s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    /* Gaya untuk penanda item yang sedang didrag */
+    .dragging-item { opacity: 0.5; transform: scale(0.98); border-color: #3b82f6 !important; }
   </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans selection:bg-blue-500 selection:text-white">
@@ -76,6 +78,9 @@
         <button id="btn-manage-users" onclick="openUserManager()" class="hidden-section relative px-3.5 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-medium rounded-xl transition flex items-center">
           <i class="fa-solid fa-users-gear mr-1.5"></i> Kelola Pengguna
           <span id="pending-badge" class="hidden-section absolute -top-1.5 -right-1.5 px-1.5 py-0.5 bg-rose-500 text-white font-bold rounded-full text-[10px]">0</span>
+        </button>
+        <button id="btn-reorder-modal" onclick="openReorderModal()" class="hidden-section px-3.5 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/30 text-xs font-medium rounded-xl transition flex items-center">
+          <i class="fa-solid fa-arrow-down-up-across-line mr-1.5"></i> Atur Urutan
         </button>
         <button id="btn-add-modal" onclick="openAppModal()" class="hidden-section px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-medium rounded-xl transition flex items-center">
           <i class="fa-solid fa-plus mr-1.5"></i> Tambah Aplikasi
@@ -290,7 +295,28 @@
     </div>
   </div>
 
-  <!-- ================= 9. CUSTOM CONFIRM DIALOG ================= -->
+  <!-- ================= 9. MODAL ATUR URUTAN (DRAG & DROP) ================= -->
+  <div id="modal-reorder" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-lg flex flex-col max-h-[85vh]">
+      <div class="flex justify-between items-center mb-2 border-b border-slate-700 pb-3">
+        <div>
+          <h3 class="text-lg font-bold">Atur Urutan Tampilan Aplikasi</h3>
+          <p class="text-xs text-slate-400">Tarik dan geser (drag & drop) atau gunakan tanda panah untuk mengubah posisi</p>
+        </div>
+        <button onclick="closeModal('modal-reorder')" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <!-- Wadah Daftar Drag & Drop -->
+      <div id="reorder-list" class="space-y-2 my-3 overflow-y-auto flex-1 pr-1"></div>
+
+      <div class="flex justify-end space-x-2 pt-3 border-t border-slate-700">
+        <button type="button" onclick="closeModal('modal-reorder')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-medium">Batal</button>
+        <button type="button" id="btn-save-reorder" onclick="saveNewOrder()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-medium">Simpan Urutan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 10. CUSTOM CONFIRM DIALOG ================= -->
   <div id="modal-confirm" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-sm text-center">
       <div class="w-12 h-12 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-3 text-lg">
@@ -306,7 +332,7 @@
     </div>
   </div>
 
-  <!-- ================= 10. MODAL PERINGATAN TIMEOUT 30 DETIK ================= -->
+  <!-- ================= 11. MODAL PERINGATAN TIMEOUT 30 DETIK ================= -->
   <div id="modal-timeout" class="hidden-section fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl border-2 border-amber-500 w-full max-w-md text-center shadow-2xl shadow-amber-500/10">
       <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl animate-pulse">
@@ -325,17 +351,18 @@
 
   <!-- ================= JAVASCRIPT ================= -->
   <script>
-    // ---> GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI <---
-    const API_URL = "https://script.google.com/macros/s/AKfycby-q_K7jlsL-rpjd1o_NvljscOAN8uU8JqLqthZ6AAdCSQfiHgjZYVfSSxj2Y8TebAQ/exec";
+    // URL WEB APP GOOGLE APPS SCRIPT ANDA SUDAH TERPASANG DI SINI:
+    const API_URL = "https://script.google.com/macros/s/AKfycby0EUthoDk5dHBe1W0e5ypY8_LbVrH-2izsCyYhDgX9NLwXw8iOkU_bjC9rQxX66S14/exec";
 
     const SESSION_KEY = "smp_portal_user";
     const IDLE_LIMIT = 14 * 60 * 1000 + 30 * 1000; // 14 menit 30 detik
-    const WARNING_TIME = 30; // 30 detik peringatan
+    const WARNING_TIME = 30; // 30 detik hitung mundur
 
     let currentUser = null;
     let appsData = [];
     let usersData = [];
     let activeAppCredentials = { user: "", pass: "" };
+    let draggedItem = null;
 
     let inactivityTimer = null;
     let countdownInterval = null;
@@ -352,6 +379,7 @@
           
           if (currentUser.role === "SuperAdmin") {
             document.getElementById('btn-manage-users').classList.remove('hidden-section');
+            document.getElementById('btn-reorder-modal').classList.remove('hidden-section');
             document.getElementById('btn-add-modal').classList.remove('hidden-section');
             checkPendingUsers();
           }
@@ -487,11 +515,12 @@
 
         if (res.success) {
           currentUser = res.user;
-          localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); // Simpan sesi
+          localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
           document.getElementById('user-greeting').innerText = `Halo, ${currentUser.name} (${currentUser.role})`;
           
           if (currentUser.role === "SuperAdmin") {
             document.getElementById('btn-manage-users').classList.remove('hidden-section');
+            document.getElementById('btn-reorder-modal').classList.remove('hidden-section');
             document.getElementById('btn-add-modal').classList.remove('hidden-section');
             checkPendingUsers();
           }
@@ -603,6 +632,122 @@
       });
     }
 
+    // --- FITUR DRAG & DROP URUTAN APLIKASI ---
+    function openReorderModal() {
+      const container = document.getElementById('reorder-list');
+      container.innerHTML = "";
+
+      appsData.forEach(app => {
+        const row = document.createElement('div');
+        row.className = "reorder-item flex items-center justify-between p-3 bg-slate-900 border border-slate-700/80 rounded-xl cursor-move transition select-none";
+        row.setAttribute("data-id", app.id);
+        row.setAttribute("draggable", "true");
+
+        row.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-grip-vertical text-slate-500 text-sm"></i>
+            <span class="font-medium text-slate-200 text-sm">${app.name}</span>
+            <span class="text-[10px] text-slate-500 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">${app.category}</span>
+          </div>
+          <div class="flex space-x-1">
+            <button type="button" onclick="moveItemUp(this)" title="Geser ke atas" class="p-1.5 text-slate-400 hover:text-blue-400 text-xs"><i class="fa-solid fa-chevron-up"></i></button>
+            <button type="button" onclick="moveItemDown(this)" title="Geser ke bawah" class="p-1.5 text-slate-400 hover:text-blue-400 text-xs"><i class="fa-solid fa-chevron-down"></i></button>
+          </div>
+        `;
+
+        row.addEventListener('dragstart', handleDragStart);
+        row.addEventListener('dragenter', handleDragEnter);
+        row.addEventListener('dragover', handleDragOver);
+        row.addEventListener('dragleave', handleDragLeave);
+        row.addEventListener('drop', handleDrop);
+        row.addEventListener('dragend', handleDragEnd);
+
+        container.appendChild(row);
+      });
+
+      openModal('modal-reorder');
+    }
+
+    function moveItemUp(btn) {
+      const item = btn.closest('.reorder-item');
+      const prev = item.previousElementSibling;
+      if (prev) { item.parentNode.insertBefore(item, prev); }
+    }
+
+    function moveItemDown(btn) {
+      const item = btn.closest('.reorder-item');
+      const next = item.nextElementSibling;
+      if (next) { item.parentNode.insertBefore(next, item); }
+    }
+
+    function handleDragStart(e) {
+      draggedItem = this;
+      this.classList.add('dragging-item');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragOver(e) {
+      if (e.preventDefault) { e.preventDefault(); }
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    }
+
+    function handleDragEnter(e) { this.classList.add('border-blue-500'); }
+    function handleDragLeave(e) { this.classList.remove('border-blue-500'); }
+
+    function handleDrop(e) {
+      if (e.stopPropagation) { e.stopPropagation(); }
+      if (draggedItem !== this) {
+        const list = document.getElementById('reorder-list');
+        const allItems = Array.from(list.children);
+        const draggedIndex = allItems.indexOf(draggedItem);
+        const targetIndex = allItems.indexOf(this);
+
+        if (draggedIndex < targetIndex) {
+          this.parentNode.insertBefore(draggedItem, this.nextSibling);
+        } else {
+          this.parentNode.insertBefore(draggedItem, this);
+        }
+      }
+      return false;
+    }
+
+    function handleDragEnd(e) {
+      document.querySelectorAll('.reorder-item').forEach(item => {
+        item.classList.remove('dragging-item', 'border-blue-500');
+      });
+    }
+
+    async function saveNewOrder() {
+      const btn = document.getElementById('btn-save-reorder');
+      btn.innerText = "Menyimpan...";
+      btn.disabled = true;
+
+      const orderedIds = Array.from(document.querySelectorAll('.reorder-item')).map(item => item.getAttribute('data-id'));
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "reorderApps", ids: orderedIds })
+        }).then(r => r.json());
+
+        if (res.success) {
+          showToast("Urutan aplikasi berhasil diperbarui!");
+          closeModal('modal-reorder');
+          await loadApps();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (err) {
+        showToast("Gagal menyimpan urutan ke server.", "error");
+      } finally {
+        btn.innerText = "Simpan Urutan";
+        btn.disabled = false;
+      }
+    }
+
+    // IFRAME VIEWER
     function openAppViewer(appId) {
       const app = appsData.find(item => item.id === appId);
       if (!app) return;
@@ -949,11 +1094,12 @@
       isWarningShowing = false;
       clearTimeout(inactivityTimer);
       clearInterval(countdownInterval);
-      localStorage.removeItem(SESSION_KEY); // Bersihkan sesi dari browser
+      localStorage.removeItem(SESSION_KEY);
 
       document.getElementById('username').value = "";
       document.getElementById('password').value = "";
       document.getElementById('btn-manage-users').classList.add('hidden-section');
+      document.getElementById('btn-reorder-modal').classList.add('hidden-section');
       document.getElementById('btn-add-modal').classList.add('hidden-section');
       closeViewer();
       showSection('login-section');
