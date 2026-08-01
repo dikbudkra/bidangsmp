@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .hidden-section { display: none !important; }
-    /* Transisi halus untuk modal dan toast */
     .fade-in { animation: fadeIn 0.2s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
   </style>
@@ -62,7 +61,6 @@
 
   <!-- ================= 2. DASHBOARD GRID ================= -->
   <section id="dashboard-section" class="hidden-section p-4 sm:p-6 max-w-7xl mx-auto fade-in">
-    <!-- Header -->
     <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 bg-slate-800/80 p-5 rounded-2xl border border-slate-700/80 gap-4">
       <div class="flex items-center space-x-3">
         <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20">
@@ -75,7 +73,6 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-end">
-        <!-- Menu Khusus SuperAdmin -->
         <button id="btn-manage-users" onclick="openUserManager()" class="hidden-section relative px-3.5 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-medium rounded-xl transition flex items-center">
           <i class="fa-solid fa-users-gear mr-1.5"></i> Kelola Pengguna
           <span id="pending-badge" class="hidden-section absolute -top-1.5 -right-1.5 px-1.5 py-0.5 bg-rose-500 text-white font-bold rounded-full text-[10px]">0</span>
@@ -83,14 +80,12 @@
         <button id="btn-add-modal" onclick="openAppModal()" class="hidden-section px-3.5 py-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-medium rounded-xl transition flex items-center">
           <i class="fa-solid fa-plus mr-1.5"></i> Tambah Aplikasi
         </button>
-
         <button onclick="logout()" class="px-3.5 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-xs font-medium rounded-xl transition flex items-center">
           <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Keluar
         </button>
       </div>
     </header>
 
-    <!-- Search Bar -->
     <div class="mb-6">
       <div class="relative max-w-md">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
@@ -99,13 +94,11 @@
       </div>
     </div>
 
-    <!-- Grid Aplikasi -->
     <div id="apps-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
   </section>
 
   <!-- ================= 3. IFRAME VIEWER DENGAN TOP BAR COPY ================= -->
   <section id="viewer-section" class="hidden-section fixed inset-0 bg-slate-950 flex flex-col z-40">
-    <!-- Top Bar -->
     <div class="bg-slate-800 px-4 py-2.5 flex flex-wrap justify-between items-center border-b border-slate-700 gap-2">
       <div class="flex items-center space-x-3">
         <button onclick="closeViewer()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-xs font-medium transition flex items-center">
@@ -114,7 +107,6 @@
         <span id="viewer-title" class="font-semibold text-slate-200 text-sm truncate max-w-[200px] sm:max-w-md">Nama Aplikasi</span>
       </div>
 
-      <!-- Masking Kredensial & Tombol Copy -->
       <div id="viewer-credentials" class="flex items-center space-x-2 text-xs">
         <div id="box-user" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 space-x-2">
           <span class="text-slate-400">User: <strong class="text-slate-200">••••••</strong></span>
@@ -132,7 +124,6 @@
       </div>
     </div>
 
-    <!-- Iframe -->
     <div class="flex-1 w-full bg-white relative">
       <iframe id="app-frame" src="" class="w-full h-full border-0" allow="fullscreen"></iframe>
     </div>
@@ -204,38 +195,84 @@
     </div>
   </div>
 
-  <!-- ================= 6. MODAL MANAJEMEN PENGGUNA & RBAC (SUPERADMIN) ================= -->
+  <!-- ================= 6. MODAL KELOLA PENGGUNA (SUPERADMIN) ================= -->
   <div id="modal-users" class="hidden-section fixed inset-0 bg-black/75 flex items-center justify-center p-4 z-50 fade-in">
-    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-3xl max-h-[85vh] flex flex-col">
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-4xl max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
         <div>
           <h3 class="text-lg font-bold">Kelola Pengguna & Hak Akses (RBAC)</h3>
-          <p class="text-xs text-slate-400">Setujui pendaftaran atau batasi akses aplikasi untuk setiap pejabat</p>
+          <p class="text-xs text-slate-400">Setujui pendaftaran, lihat kredensial, atau batasi aplikasi</p>
         </div>
         <button onclick="closeModal('modal-users')" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
-      <!-- Tabel Daftar Pengguna -->
       <div class="overflow-y-auto flex-1 border border-slate-700/80 rounded-xl">
         <table class="w-full text-left border-collapse text-xs">
           <thead class="bg-slate-900/80 sticky top-0 text-slate-400">
             <tr>
               <th class="p-3">Nama / Jabatan</th>
               <th class="p-3">Username</th>
+              <th class="p-3">Password</th>
               <th class="p-3">Role</th>
               <th class="p-3">Status</th>
               <th class="p-3 text-right">Aksi</th>
             </tr>
           </thead>
-          <tbody id="users-table-body" class="divide-y divide-slate-700/60">
-            <!-- Data user dari JS -->
-          </tbody>
+          <tbody id="users-table-body" class="divide-y divide-slate-700/60"></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ================= 7. MODAL EDIT AKSES USER (RBAC CHECKBOX) ================= -->
+  <!-- ================= 7. MODAL EDIT PENGGUNA ================= -->
+  <div id="modal-edit-user" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-md">
+      <h3 class="text-base font-bold mb-1">Edit Data Pengguna</h3>
+      <p class="text-xs text-slate-400 mb-4">Ubah profil, kredensial, role, atau status akun</p>
+
+      <form id="form-edit-user" class="space-y-3.5">
+        <input type="hidden" id="edit-old-username">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Nama Lengkap & Jabatan</label>
+          <input type="text" id="edit-user-name" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Username</label>
+            <input type="text" id="edit-user-username" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Password</label>
+            <input type="text" id="edit-user-password" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-mono text-amber-300 focus:border-blue-500 focus:outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Role</label>
+            <select id="edit-user-role" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+              <option value="Viewer">Viewer</option>
+              <option value="SuperAdmin">SuperAdmin</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Status Akun</label>
+            <select id="edit-user-status" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+              <option value="Aktif">Aktif</option>
+              <option value="Pending">Pending</option>
+              <option value="Nonaktif">Nonaktif</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('modal-edit-user')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-medium">Batal</button>
+          <button type="submit" id="btn-save-edit-user" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-medium">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= 8. MODAL RBAC (CHECKBOX AKSES) ================= -->
   <div id="modal-rbac" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-md">
       <h3 class="text-base font-bold mb-1">Atur Akses Aplikasi</h3>
@@ -243,10 +280,7 @@
 
       <form id="form-rbac" class="space-y-4">
         <input type="hidden" id="rbac-username">
-        
-        <div id="rbac-checkbox-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1 bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-xs">
-          <!-- Checkbox aplikasi akan dimuat di sini -->
-        </div>
+        <div id="rbac-checkbox-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1 bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-xs"></div>
 
         <div class="flex justify-end space-x-2 pt-2">
           <button type="button" onclick="closeModal('modal-rbac')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-medium">Batal</button>
@@ -256,7 +290,7 @@
     </div>
   </div>
 
-  <!-- ================= 8. CUSTOM CONFIRMATION DIALOG ================= -->
+  <!-- ================= 9. CUSTOM CONFIRM DIALOG ================= -->
   <div id="modal-confirm" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-sm text-center">
       <div class="w-12 h-12 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-3 text-lg">
@@ -274,15 +308,14 @@
 
   <!-- ================= JAVASCRIPT ================= -->
   <script>
-    // MASUKKAN URL WEB APP GAS ANDA DI SINI
-    const API_URL = "https://script.google.com/macros/s/AKfycbwobvqVzOXZWSBeNyU_3KAVAbHU3jcxqWa80CG1J49tQfFtGs_rg2aOpyRc2JgTq6hY/exec";
+    // ---> GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA DI SINI <---
+    const API_URL = "https://script.google.com/macros/s/AKfycby-q_K7jlsL-rpjd1o_NvljscOAN8uU8JqLqthZ6AAdCSQfiHgjZYVfSSxj2Y8TebAQ/exec";
 
     let currentUser = null;
     let appsData = [];
     let usersData = [];
     let activeAppCredentials = { user: "", pass: "" };
 
-    // --- HELPER UI ---
     function showSection(sectionId) {
       document.getElementById('login-section').classList.add('hidden-section');
       document.getElementById('dashboard-section').classList.add('hidden-section');
@@ -305,7 +338,6 @@
       }
     }
 
-    // --- MODERN TOAST NOTIFICATION ---
     function showToast(message, type = "success") {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -325,7 +357,6 @@
       }, 3000);
     }
 
-    // --- CUSTOM CONFIRM DIALOG ---
     function showConfirm(title, message, onConfirmCallback) {
       document.getElementById('confirm-title').innerText = title;
       document.getElementById('confirm-message').innerText = message;
@@ -341,7 +372,7 @@
       });
     }
 
-    // --- 1. PROSES LOGIN ---
+    // LOGIN
     document.getElementById('login-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-login');
@@ -365,7 +396,7 @@
           if (currentUser.role === "SuperAdmin") {
             document.getElementById('btn-manage-users').classList.remove('hidden-section');
             document.getElementById('btn-add-modal').classList.remove('hidden-section');
-            checkPendingUsers(); // Periksa notifikasi persetujuan user
+            checkPendingUsers();
           }
 
           showToast("Berhasil masuk ke portal!");
@@ -382,7 +413,7 @@
       }
     });
 
-    // --- 2. REGISTRASI AKUN BARU ---
+    // REGISTER
     document.getElementById('form-register').addEventListener('submit', async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btn-save-reg');
@@ -417,7 +448,7 @@
       }
     });
 
-    // --- 3. MEMUAT & MENAMPILKAN KARTU APLIKASI ---
+    // LOAD APPS
     async function loadApps() {
       const grid = document.getElementById('apps-grid');
       grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-sm">Memuat aplikasi layanan...</div>`;
@@ -474,7 +505,6 @@
       });
     }
 
-    // --- 4. BUKA IFRAME & SET TOP BAR COPY CREDENTIALS ---
     function openAppViewer(appId) {
       const app = appsData.find(item => item.id === appId);
       if (!app) return;
@@ -482,7 +512,6 @@
       document.getElementById('viewer-title').innerText = app.name;
       document.getElementById('app-frame').src = app.url;
 
-      // Simpan kredensial aktif
       activeAppCredentials = {
         user: app.usernameApp || "",
         pass: app.passwordApp || ""
@@ -491,17 +520,8 @@
       const boxUser = document.getElementById('box-user');
       const boxPass = document.getElementById('box-pass');
 
-      if (activeAppCredentials.user) {
-        boxUser.classList.remove('hidden-section');
-      } else {
-        boxUser.classList.add('hidden-section');
-      }
-
-      if (activeAppCredentials.pass) {
-        boxPass.classList.remove('hidden-section');
-      } else {
-        boxPass.classList.add('hidden-section');
-      }
+      boxUser.classList.toggle('hidden-section', !activeAppCredentials.user);
+      boxPass.classList.toggle('hidden-section', !activeAppCredentials.pass);
 
       showSection('viewer-section');
     }
@@ -511,7 +531,6 @@
       showSection('dashboard-section');
     }
 
-    // Fitur Salin dengan feedback visual
     function copyCredential(type) {
       const textToCopy = type === 'user' ? activeAppCredentials.user : activeAppCredentials.pass;
       const btnIcon = document.querySelector(`#btn-copy-${type} i`);
@@ -519,13 +538,11 @@
       navigator.clipboard.writeText(textToCopy).then(() => {
         btnIcon.className = "fa-solid fa-check text-emerald-400";
         showToast(`${type === 'user' ? 'Username' : 'Password'} berhasil disalin!`);
-        setTimeout(() => {
-          btnIcon.className = "fa-regular fa-copy";
-        }, 1500);
+        setTimeout(() => { btnIcon.className = "fa-regular fa-copy"; }, 1500);
       });
     }
 
-    // --- 5. TAMBAH / EDIT APLIKASI ---
+    // ADD / EDIT APP
     function openAppModal() {
       document.getElementById('app-modal-title').innerText = "Tambah Aplikasi Baru";
       document.getElementById('form-app').reset();
@@ -602,7 +619,7 @@
       });
     }
 
-    // --- 6. MANAJEMEN PENGGUNA & RBAC (SUPERADMIN) ---
+    // MANAJEMEN PENGGUNA
     async function checkPendingUsers() {
       try {
         const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "getUsers" }) }).then(r => r.json());
@@ -635,22 +652,26 @@
         
         const statusBadge = isPending ?
           `<span class="px-2 py-0.5 bg-amber-500/20 text-amber-300 rounded border border-amber-500/30">Pending</span>` :
-          `<span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">Aktif</span>`;
+          (user.status === "Nonaktif" ?
+            `<span class="px-2 py-0.5 bg-rose-500/20 text-rose-300 rounded border border-rose-500/30">Nonaktif</span>` :
+            `<span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded border border-emerald-500/30">Aktif</span>`);
 
         const row = document.createElement('tr');
         row.innerHTML = `
           <td class="p-3 font-medium text-slate-200">${user.name}</td>
-          <td class="p-3 text-slate-400">${user.username}</td>
+          <td class="p-3 text-slate-300">${user.username}</td>
+          <td class="p-3 font-mono text-amber-300 select-all">${user.password}</td>
           <td class="p-3 text-slate-400">${user.role}</td>
           <td class="p-3">${statusBadge}</td>
-          <td class="p-3 text-right space-x-2">
+          <td class="p-3 text-right space-x-2 whitespace-nowrap">
             ${isPending ? `
               <button onclick="approveUser('${user.username}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-[11px] font-medium transition">Approve</button>
             ` : ''}
             ${!isSuper ? `
               <button onclick="openRBACModal('${user.username}')" title="Atur Aplikasi" class="text-slate-400 hover:text-blue-400 transition"><i class="fa-solid fa-list-check"></i></button>
-              <button onclick="confirmDeleteUser('${user.username}')" title="Hapus User" class="text-slate-400 hover:text-rose-400 transition ml-1"><i class="fa-solid fa-trash"></i></button>
-            ` : `<span class="text-[10px] text-slate-500 italic">Akses Penuh</span>`}
+            ` : ''}
+            <button onclick="openEditUser('${user.username}')" title="Edit Pengguna" class="text-slate-400 hover:text-emerald-400 transition ml-1"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button onclick="confirmDeleteUser('${user.username}')" title="Hapus User" class="text-slate-400 hover:text-rose-400 transition ml-1"><i class="fa-solid fa-trash"></i></button>
           </td>
         `;
         tbody.appendChild(row);
@@ -661,7 +682,7 @@
       const targetUser = usersData.find(u => u.username === username);
       if (!targetUser) return;
       
-      targetUser.status = "Aktif"; // Ubah ke Aktif
+      targetUser.status = "Aktif";
       
       try {
         const res = await fetch(API_URL, {
@@ -678,6 +699,62 @@
         showToast("Gagal memproses persetujuan.", "error");
       }
     }
+
+    // EDIT USER (NAMA, USERNAME, PASSWORD, ROLE, STATUS)
+    function openEditUser(username) {
+      const user = usersData.find(u => u.username === username);
+      if (!user) return;
+
+      document.getElementById('edit-old-username').value = user.username;
+      document.getElementById('edit-user-name').value = user.name;
+      document.getElementById('edit-user-username').value = user.username;
+      document.getElementById('edit-user-password').value = user.password;
+      document.getElementById('edit-user-role').value = user.role || "Viewer";
+      document.getElementById('edit-user-status').value = user.status || "Aktif";
+      
+      openModal('modal-edit-user');
+    }
+
+    document.getElementById('form-edit-user').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-edit-user');
+      btn.innerText = "Menyimpan...";
+      btn.disabled = true;
+
+      const oldUsername = document.getElementById('edit-old-username').value;
+      const targetUser = usersData.find(u => u.username === oldUsername) || {};
+
+      const updatedData = {
+        oldUsername: oldUsername,
+        username: document.getElementById('edit-user-username').value.trim(),
+        password: document.getElementById('edit-user-password').value.trim(),
+        name: document.getElementById('edit-user-name').value.trim(),
+        role: document.getElementById('edit-user-role').value,
+        status: document.getElementById('edit-user-status').value,
+        allowedApps: targetUser.allowedApps || ""
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "saveUser", data: updatedData })
+        }).then(r => r.json());
+
+        if (res.success) {
+          showToast("Data pengguna berhasil diperbarui!");
+          closeModal('modal-edit-user');
+          await checkPendingUsers();
+          renderUsersTable();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch (err) {
+        showToast("Gagal memperbarui data pengguna.", "error");
+      } finally {
+        btn.innerText = "Simpan Perubahan";
+        btn.disabled = false;
+      }
+    });
 
     function confirmDeleteUser(username) {
       showConfirm("Hapus Pengguna", `Yakin ingin menghapus akses untuk pengguna @${username}?`, async () => {
@@ -698,7 +775,7 @@
       });
     }
 
-    // --- 7. MODAL KELOLA AKSES PER USER (RBAC CHECKBOX) ---
+    // RBAC
     function openRBACModal(username) {
       const user = usersData.find(u => u.username === username);
       if (!user) return;
@@ -737,7 +814,6 @@
       const targetUser = usersData.find(u => u.username === username);
       if (!targetUser) return;
 
-      // Ambil semua checkbox yang dicentang
       const checkedBoxes = document.querySelectorAll('input[name="rbac-app-item"]:checked');
       const selectedApps = Array.from(checkedBoxes).map(cb => cb.value).join(",");
 
@@ -762,7 +838,6 @@
       }
     });
 
-    // --- PENCARIAN APLIKASI ---
     document.getElementById('search-input').addEventListener('input', function(e) {
       const keyword = e.target.value.toLowerCase();
       const filtered = appsData.filter(app => 
@@ -772,7 +847,6 @@
       renderApps(filtered);
     });
 
-    // --- LOGOUT ---
     function logout() {
       currentUser = null;
       document.getElementById('username').value = "";
