@@ -57,7 +57,7 @@ jobs:
           cp icon-512.png assets/icon.png 2>/dev/null || true
           cp icon-512.png assets/icon-only.png 2>/dev/null || true
           cp icon-512.png assets/icon-foreground.png 2>/dev/null || true
-          cp icon-background-gl.png assets/icon-background.png 2>/dev/null || true
+          cp icon-background-nv.png assets/icon-background.png 2>/dev/null || true
 
           npm install -D @capacitor/assets@latest
           npx capacitor-assets generate --android
