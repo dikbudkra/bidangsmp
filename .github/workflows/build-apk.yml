@@ -52,6 +52,11 @@ jobs:
           # 4. Tambahkan platform Android
           npx cap add android
 
+          mkdir -p assets
+          cp icon-512.png assets/icon.png 2>/dev/null || true
+          npm install -D @capacitor/assets@latest
+          npx capacitor-assets generate --android
+
           # 5. SOLUSI MASALAH 1 & 2: Mencegah Bentrok Kotlin & Optimasi Memori Gradle
           cat << 'EOF' >> android/build.gradle
 
