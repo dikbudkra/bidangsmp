@@ -57,6 +57,14 @@ jobs:
           npm install -D @capacitor/assets@latest
           npx capacitor-assets generate --android
 
+          find android/app/src/main/res -type f -name "*.xml" -exec sed -i 's/#FFFFFF/#0f172a/g; s/#ffffff/#0f172a/g' {} +
+          cat << 'EOF' > android/app/src/main/res/values/ic_launcher_background.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="ic_launcher_background">#0f172a</color>
+          </resources>
+          EOF
+
           # 5. SOLUSI MASALAH 1 & 2: Mencegah Bentrok Kotlin & Optimasi Memori Gradle
           cat << 'EOF' >> android/build.gradle
 
