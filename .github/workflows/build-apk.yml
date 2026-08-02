@@ -52,29 +52,18 @@ jobs:
           # 4. Tambahkan platform Android
           npx cap add android
 
+          # 5. PASANG IKON APK (DENGAN LAPISAN BACKGROUND BIRU NAVY #0f172a)
           mkdir -p assets
           cp icon-512.png assets/icon.png 2>/dev/null || true
+          cp icon-512.png assets/icon-foreground.png 2>/dev/null || true
+          
+          # Membuat gambar background solid warna Biru Navy (#0f172a) agar tidak dibuatkan putih oleh sistem
+          convert -size 512x512 xc:"#0f172a" assets/icon-background.png
+          convert icon-512.png -background "#0f172a" -flatten assets/icon.png
+          
           npm install -D @capacitor/assets@latest
           npx capacitor-assets generate --android
-
-          # === SOLUSI TUNTAS MENGHILANGKAN SUDUT PUTIH (DARK NAVY #0f172a) ===
-          # 1. Hapus gambar background putih hasil generate otomatis
-          rm -f android/app/src/main/res/mipmap-*/ic_launcher_background.* 2>/dev/null || true
-          rm -f android/app/src/main/res/drawable-*/ic_launcher_background.* 2>/dev/null || true
-
-          # 2. Paksa konfigurasi Adaptive Icon Android memakai warna XML (bukan gambar)
-          sed -i 's/@mipmap\/ic_launcher_background/@color\/ic_launcher_background/g; s/@drawable\/ic_launcher_background/@color\/ic_launcher_background/g' android/app/src/main/res/mipmap-anydpi-v26/*.xml 2>/dev/null || true
-
-          # 3. Tetapkan warna Dark Navy (#0f172a) ke seluruh file konfigurasi
-          mkdir -p android/app/src/main/res/values
-          cat << 'EOF' > android/app/src/main/res/values/ic_launcher_background.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <color name="ic_launcher_background">#0f172a</color>
-          </resources>
-          EOF
-          find android/app/src/main/res -type f -name "*.xml" -exec sed -i 's/#FFFFFF/#0f172a/g; s/#ffffff/#0f172a/g; s/#FFF/#0f172a/g; s/#fff/#0f172a/g' {} +
-          # ===================================================================
+          # ================================================================
 
           # 5. SOLUSI MASALAH 1 & 2: Mencegah Bentrok Kotlin & Optimasi Memori Gradle
           cat << 'EOF' >> android/build.gradle
