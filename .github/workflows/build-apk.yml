@@ -52,21 +52,14 @@ jobs:
           # 4. Tambahkan platform Android
           npx cap add android
 
-          # 5. PASANG IKON APK (DENGAN LAPISAN BACKGROUND BIRU NAVY #0f172a)
+          # 5. PASANG IKON APK (DEPAN: LOGO BULAT, BELAKANG: BIRU NAVY)
           mkdir -p assets
-          cp icon-512.png assets/icon.png 2>/dev/null || true
           cp icon-512.png assets/icon-foreground.png 2>/dev/null || true
+          cp icon-background-gl.png assets/icon-background.png 2>/dev/null || true
 
-          # Install ImageMagick di server GitHub agar perintah 'convert' bisa dijalankan
-          sudo apt-get update -y && sudo apt-get install -y imagemagick
-          
-          # Membuat gambar background solid warna Biru Navy (#0f172a) agar tidak dibuatkan putih oleh sistem
-          convert -size 512x512 xc:"#0f172a" assets/icon-background.png
-          convert icon-512.png -background "#0f172a" -flatten assets/icon.png
-          
           npm install -D @capacitor/assets@latest
           npx capacitor-assets generate --android
-          # ================================================================
+          # =========================================================
 
           # 5. SOLUSI MASALAH 1 & 2: Mencegah Bentrok Kotlin & Optimasi Memori Gradle
           cat << 'EOF' >> android/build.gradle
