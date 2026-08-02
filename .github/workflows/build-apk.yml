@@ -1,9 +1,9 @@
 name: Build APK Android Otomatis
 
 on:
-  workflow_dispatch: # Memunculkan tombol manual "Run workflow" di tab Actions
+  workflow_dispatch:
   push:
-    branches: [ main, master ] # Otomatis jalan setiap ada update kode
+    branches: [ main, master ]
 
 jobs:
   build-apk:
@@ -27,17 +27,21 @@ jobs:
 
       - name: 4. Membangun Proyek Android & Rakit APK
         run: |
-          # Inisialisasi proyek mobile Android
+          # 1. Buat folder 'www' dan salin file web agar Capacitor tidak error "subdirectory of itself"
+          mkdir -p www
+          cp index.html manifest.json sw.js icon-192.png icon-512.png www/ 2>/dev/null || true
+
+          # 2. Inisialisasi proyek mobile Android
           npm init -y
           npm install @capacitor/cli @capacitor/core @capacitor/android
-          npx cap init "Bidang SMP" "id.go.karanganyar.disdikbud.smp" --web-dir=.
+          npx cap init "Bidang SMP" "id.go.karanganyar.disdikbud.smp" --web-dir=www
           
-          # Mengatur agar APK langsung membuka web GitHub Pages Anda (Standalone PWA/TWA mode)
+          # 3. Mengatur agar APK langsung membuka web GitHub Pages Anda (Standalone PWA/TWA mode)
           cat << 'EOF' > capacitor.config.json
           {
             "appId": "id.go.karanganyar.disdikbud.smp",
             "appName": "Bidang SMP",
-            "webDir": ".",
+            "webDir": "www",
             "server": {
               "url": "https://dikbudkra.github.io/bidangsmp",
               "cleartext": true
@@ -45,7 +49,7 @@ jobs:
           }
           EOF
 
-          # Menambahkan platform Android dan memulai proses Build APK
+          # 4. Menambahkan platform Android dan memulai proses Build APK
           npx cap add android
           cd android
           chmod +x gradlew
