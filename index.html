@@ -25,13 +25,9 @@
 
   <!-- ================= 1. HALAMAN LOGIN ================= -->
   <section id="login-section" class="flex-1 flex flex-col justify-between items-center p-4 fade-in overflow-y-auto">
-    <!-- Spacer atas -->
     <div class="w-full"></div>
-
-    <!-- Kotak Login Resmi -->
     <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md my-auto">
       <div class="text-center mb-6">
-        <!-- Logo Resmi Kabupaten Karanganyar (Tanpa Box, Ukuran Diperbesar) -->
         <img src="https://lh3.googleusercontent.com/d/1e1LH5ZgYyLjclSNXwMAU5Zy_PKiju5z-" 
              alt="Logo Kabupaten Karanganyar" 
              class="h-20 sm:h-24 w-auto object-contain mx-auto mb-3 drop-shadow-md">
@@ -69,7 +65,6 @@
       </div>
     </div>
 
-    <!-- Footer Signature di Login Page (Mobile-Safe) -->
     <footer class="w-full text-center py-4 text-[11px] sm:text-sm font-medium tracking-wider text-slate-500 whitespace-nowrap">
       DIGITALLY SHAPED BY 
       <img src="https://i.ibb.co.com/KpqwmHd6/Logo-Jemprot-2-1-removebg-preview.png" 
@@ -81,11 +76,8 @@
 
   <!-- ================= 2. DASHBOARD GRID (1 LAYAR TERKUNCI) ================= -->
   <section id="dashboard-section" class="hidden-section flex-1 flex flex-col h-full overflow-hidden max-w-7xl w-full mx-auto px-3 sm:px-6 pt-3 sm:pt-6 fade-in">
-    <!-- ZONE 1: HEADER RESMI INSTANSI & USER BADGE (FIXED) -->
     <header class="flex-none flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 sm:mb-4 bg-slate-800/80 p-4 sm:p-5 rounded-2xl border border-slate-700/80 gap-3 sm:gap-4">
-      <!-- Kiri: Identitas Dinas & Logo Karanganyar -->
       <div class="flex items-center space-x-3 sm:space-x-3.5">
-        <!-- Logo Tanpa Kotak Hitam -->
         <img src="https://lh3.googleusercontent.com/d/1e1LH5ZgYyLjclSNXwMAU5Zy_PKiju5z-" 
              alt="Logo Kabupaten Karanganyar" 
              class="h-12 sm:h-14 w-auto object-contain flex-shrink-0 drop-shadow">
@@ -95,15 +87,12 @@
         </div>
       </div>
 
-      <!-- Kanan: Lencana User (Atas) & Kontrol Admin (Bawah) - RAPI 2 BARIS -->
       <div class="flex flex-col items-start lg:items-end justify-center gap-2 w-full lg:w-auto">
-        <!-- Baris 1 (Atas): Pill Badge User -->
         <div class="inline-flex items-center space-x-2 px-3 py-1 bg-slate-900/90 border border-slate-700 rounded-full text-xs font-medium text-slate-300 shadow-inner">
           <i class="fa-solid fa-user-shield text-blue-400"></i>
           <span id="user-greeting">Halo, Pengguna</span>
         </div>
 
-        <!-- Baris 2 (Bawah): Tombol Aksi Admin -->
         <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto justify-end">
           <button id="btn-manage-users" onclick="openUserManager()" class="hidden-section relative px-3 py-1.5 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-medium rounded-xl transition flex items-center justify-center">
             <i class="fa-solid fa-users-gear mr-1.5"></i> Kelola User
@@ -119,7 +108,6 @@
       </div>
     </header>
 
-    <!-- ZONE 2: ACTION BAR - PENCARIAN & TAMBAH APLIKASI (OPSI 2 - FIXED) -->
     <div class="flex-none mb-3 sm:mb-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2.5">
       <div class="relative flex-1 max-w-md">
         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
@@ -132,12 +120,8 @@
       </button>
     </div>
 
-    <!-- ZONE 3: AREA APLIKASI (ACCORDION - BISA DI-SCROLL NAIK-TURUN) -->
-    <div id="apps-container" class="flex-1 overflow-y-auto pr-1 pb-4 space-y-4 sm:space-y-5">
-      <!-- Daftar Kategori & Kartu Aplikasi dimuat via JS -->
-    </div>
+    <div id="apps-container" class="flex-1 overflow-y-auto pr-1 pb-4 space-y-4 sm:space-y-5"></div>
 
-    <!-- ZONE 4: FOOTER SIGNATURE DASHBOARD (FIXED & MOBILE-SAFE) -->
     <footer class="flex-none border-t border-slate-800 py-3 sm:py-3.5 text-center text-[11px] sm:text-sm font-medium tracking-wider text-slate-500 whitespace-nowrap">
       DIGITALLY SHAPED BY 
       <img src="https://i.ibb.co.com/KpqwmHd6/Logo-Jemprot-2-1-removebg-preview.png" 
@@ -209,43 +193,144 @@
 
   <!-- ================= 5. MODAL TAMBAH/EDIT APLIKASI ================= -->
   <div id="modal-app" class="hidden-section fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 fade-in">
-    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-md">
-      <h3 id="app-modal-title" class="text-lg font-bold mb-4">Tambah Aplikasi Baru</h3>
-      
-      <form id="form-app" class="space-y-3.5">
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-lg max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-2.5">
+        <h3 id="app-modal-title" class="text-base font-bold">Tambah Aplikasi Baru</h3>
+        <button type="button" onclick="closeModal('modal-app')" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="form-app" class="space-y-3 overflow-y-auto flex-1 pr-1">
         <input type="hidden" id="app-id">
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Nama Aplikasi</label>
-          <input type="text" id="app-name" required placeholder="misal: Laporan SPMB" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">Kategori</label>
-          <input type="text" id="app-category" required placeholder="misal: Akademik" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">URL Web App GAS</label>
-          <input type="url" id="app-url" required placeholder="https://script.google.com/..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
-        </div>
-        <div class="grid grid-cols-2 gap-3 pt-1">
+        
+        <!-- DATA INTERNAL (GAS) -->
+        <div class="space-y-2.5 bg-slate-900/60 p-3 rounded-xl border border-slate-700/60">
+          <span class="text-[11px] font-semibold text-blue-400 uppercase tracking-wider block mb-1">1. Konfigurasi Internal (Portal)</span>
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Username App (Opsional)</label>
-            <input type="text" id="app-user-cred" placeholder="user di GAS" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+            <label class="block text-xs font-medium text-slate-300 mb-1">Nama Aplikasi</label>
+            <input type="text" id="app-name" required placeholder="misal: Laporan SPMB" class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">Password App</label>
-            <input type="text" id="app-pass-cred" placeholder="pass di GAS" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+            <label class="block text-xs font-medium text-slate-300 mb-1">Kategori</label>
+            <input type="text" id="app-category" required placeholder="misal: Akademik" class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">URL Web App GAS</label>
+            <input type="url" id="app-url" required placeholder="https://script.google.com/..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+          </div>
+          <div class="grid grid-cols-2 gap-2.5 pt-0.5">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">User GAS (Opsional)</label>
+              <input type="text" id="app-user-cred" placeholder="user di GAS" class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Pass GAS</label>
+              <input type="text" id="app-pass-cred" placeholder="pass di GAS" class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+            </div>
           </div>
         </div>
 
-        <div class="flex justify-end space-x-2 pt-3">
-          <button type="button" onclick="closeModal('modal-app')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-medium transition">Batal</button>
-          <button type="submit" id="btn-save-app" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-medium transition">Simpan</button>
+        <!-- DATA EKSTERNAL (SHARE SEKOLAH / UMUM) -->
+        <div class="space-y-2.5 bg-slate-900/60 p-3 rounded-xl border border-slate-700/60">
+          <span class="text-[11px] font-semibold text-cyan-400 uppercase tracking-wider block mb-1">2. Berbagi Link Eksternal (Opsional)</span>
+          <div class="grid grid-cols-3 gap-2.5">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Tipe Akses</label>
+              <select id="app-ext-type" class="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+                <option value="">Tidak Ada</option>
+                <option value="Sekolah">Sekolah</option>
+                <option value="Umum">Umum</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label class="block text-xs font-medium text-slate-300 mb-1">URL Eksternal</label>
+              <input type="url" id="app-ext-url" placeholder="https://..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">User Eksternal</label>
+              <input type="text" id="app-ext-user" placeholder="opsional" class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">Password Eksternal</label>
+              <input type="text" id="app-ext-pass" placeholder="opsional" class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">Catatan Berbagi</label>
+            <input type="text" id="app-ext-note" placeholder="misal: Khusus Operator SMP" class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs focus:border-blue-500 focus:outline-none">
+          </div>
         </div>
       </form>
+
+      <div class="flex justify-end space-x-2 pt-3 border-t border-slate-700 mt-3">
+        <button type="button" onclick="closeModal('modal-app')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-medium transition">Batal</button>
+        <button type="submit" form="form-app" id="btn-save-app" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-medium transition">Simpan</button>
+      </div>
     </div>
   </div>
 
-  <!-- ================= 6. MODAL KELOLA PENGGUNA (SUPERADMIN) ================= -->
+  <!-- ================= 6. MODAL INFO BERBAGI EKSTERNAL ================= -->
+  <div id="modal-share-ext" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-md">
+      <div class="flex justify-between items-start mb-3 border-b border-slate-700 pb-2.5">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span id="share-badge-type" class="text-[10px] font-bold uppercase px-2 py-0.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-md">Sekolah</span>
+            <h3 id="share-app-name" class="text-base font-bold text-slate-100">Nama Aplikasi</h3>
+          </div>
+          <p id="share-note" class="text-xs text-slate-400 mt-1"></p>
+        </div>
+        <button onclick="closeModal('modal-share-ext')" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 my-2 text-xs">
+        <!-- URL Eksternal -->
+        <div class="bg-slate-900 p-3 rounded-xl border border-slate-700/80 space-y-1.5">
+          <span class="text-slate-400 block">Link Akses Eksternal:</span>
+          <div class="flex items-center justify-between gap-2">
+            <span id="share-url-text" class="font-mono text-cyan-300 underline break-all select-all">https://...</span>
+            <div class="flex space-x-1 flex-shrink-0">
+              <a id="share-url-link" href="#" target="_blank" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 text-[11px]" title="Buka Tab Baru">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+              <button onclick="copyShareText('url')" class="px-2.5 py-1 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded border border-blue-500/30 font-medium text-[11px]">
+                <i class="fa-regular fa-copy mr-1"></i> Salin
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Eksternal -->
+        <div id="share-user-box" class="hidden-section bg-slate-900 p-3 rounded-xl border border-slate-700/80 flex items-center justify-between">
+          <div>
+            <span class="text-slate-400 block">Username Eksternal:</span>
+            <span id="share-user-text" class="font-mono font-bold text-slate-100 select-all">...</span>
+          </div>
+          <button onclick="copyShareText('user')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 font-medium text-[11px]">
+            <i class="fa-regular fa-copy mr-1"></i> Salin
+          </button>
+        </div>
+
+        <!-- Pass Eksternal -->
+        <div id="share-pass-box" class="hidden-section bg-slate-900 p-3 rounded-xl border border-slate-700/80 flex items-center justify-between">
+          <div>
+            <span class="text-slate-400 block">Password Eksternal:</span>
+            <span id="share-pass-text" class="font-mono font-bold text-amber-300 select-all">...</span>
+          </div>
+          <button onclick="copyShareText('pass')" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 font-medium text-[11px]">
+            <i class="fa-regular fa-copy mr-1"></i> Salin
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-3 border-t border-slate-700 mt-3">
+        <button type="button" onclick="closeModal('modal-share-ext')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-medium">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 7. MODAL KELOLA PENGGUNA (SUPERADMIN) ================= -->
   <div id="modal-users" class="hidden-section fixed inset-0 bg-black/75 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-4xl max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-3">
@@ -274,7 +359,7 @@
     </div>
   </div>
 
-  <!-- ================= 7. MODAL EDIT PENGGUNA ================= -->
+  <!-- ================= 8. MODAL EDIT PENGGUNA ================= -->
   <div id="modal-edit-user" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-md">
       <h3 class="text-base font-bold mb-1">Edit Data Pengguna</h3>
@@ -322,7 +407,7 @@
     </div>
   </div>
 
-  <!-- ================= 8. MODAL HAK AKSES BERTINGKAT ================= -->
+  <!-- ================= 9. MODAL HAK AKSES BERTINGKAT ================= -->
   <div id="modal-rbac" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-lg flex flex-col max-h-[85vh]">
       <div class="flex justify-between items-center mb-1 border-b border-slate-700 pb-3">
@@ -333,7 +418,6 @@
         <button onclick="closeModal('modal-rbac')" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
-      <!-- Tombol Cepat: Pilih Semua / Hapus Semua -->
       <div class="flex justify-between items-center py-2.5 border-b border-slate-700/60 text-xs">
         <span class="text-slate-400 font-medium">Pilih Akses Layanan:</span>
         <div class="space-x-2">
@@ -358,7 +442,7 @@
     </div>
   </div>
 
-  <!-- ================= 9. MODAL ATUR URUTAN (DRAG & DROP) ================= -->
+  <!-- ================= 10. MODAL ATUR URUTAN (DRAG & DROP) ================= -->
   <div id="modal-reorder" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-lg flex flex-col max-h-[85vh]">
       <div class="flex justify-between items-center mb-2 border-b border-slate-700 pb-3">
@@ -378,7 +462,7 @@
     </div>
   </div>
 
-  <!-- ================= 10. CUSTOM CONFIRM DIALOG ================= -->
+  <!-- ================= 11. CUSTOM CONFIRM DIALOG ================= -->
   <div id="modal-confirm" class="hidden-section fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 fade-in">
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 w-full max-w-sm text-center">
       <div class="w-12 h-12 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-full flex items-center justify-center mx-auto mb-3 text-lg">
@@ -394,48 +478,30 @@
     </div>
   </div>
 
-  <!-- ================= 11. MODAL PERINGATAN TIMEOUT 30 DETIK ================= -->
-  <div id="modal-timeout" class="hidden-section fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50 fade-in">
-    <div class="bg-slate-800 p-6 sm:p-8 rounded-2xl border-2 border-amber-500 w-full max-w-md text-center shadow-2xl shadow-amber-500/10">
-      <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl animate-pulse">
-        <i class="fa-solid fa-clock-rotate-left"></i>
-      </div>
-      <h3 class="text-xl font-bold text-slate-100 mb-2">Sesi Anda Akan Habis!</h3>
-      <p class="text-sm text-slate-300 mb-4">
-        Sesi Anda akan berakhir dalam <span id="countdown-text" class="text-amber-400 font-bold text-lg">30</span> detik karena tidak ada aktivitas.
-      </p>
-      
-      <button type="button" onclick="extendSession()" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl transition shadow-lg text-sm">
-        <i class="fa-solid fa-rotate-right mr-1.5"></i> [Klik di sini untuk perpanjang]
-      </button>
-    </div>
-  </div>
-
   <!-- ================= JAVASCRIPT ================= -->
   <script>
-    // URL WEB APP GOOGLE APPS SCRIPT:
-    const API_URL = "https://script.google.com/macros/s/AKfycby0EUthoDk5dHBe1W0e5ypY8_LbVrH-2izsCyYhDgX9NLwXw8iOkU_bjC9rQxX66S14/exec";
+    // URL WEB APP GOOGLE APPS SCRIPT (TERBARU):
+    const API_URL = "https://script.google.com/macros/s/AKfycbyjCDuhuqkuY0sj82uyXmWOui6-leZYS3Pj1MGFHPL3k3wg9VfBTmg6el5AmQVX0ExO/exec";
 
-    const SESSION_KEY = "smp_portal_user";
+    const SESSION_KEY = "smp_portal_user_session";
+    const TIMESTAMP_KEY = "smp_portal_last_activity";
     const ACCORDION_KEY = "smp_portal_accordion";
-    const IDLE_LIMIT = 14 * 60 * 1000 + 30 * 1000; // 14 menit 30 detik
-    const WARNING_TIME = 30; // 30 detik hitung mundur
+    const IDLE_LIMIT = 15 * 60 * 1000; // 15 Menit
 
     let currentUser = null;
     let appsData = [];
     let usersData = [];
     let activeAppCredentials = { user: "", pass: "" };
+    let activeShareData = { url: "", user: "", pass: "" };
     let draggedItem = null;
     let categoryStates = {};
 
     let inactivityTimer = null;
-    let countdownInterval = null;
-    let remainingSeconds = WARNING_TIME;
-    let isWarningShowing = false;
+    let isWorkingInApp = false; // Mode fokus aman saat membuka aplikasi
 
-    // --- CEK SESI & ACCORDION STATE SAAT REFRESH HALAMAN ---
+    // --- CEK SESI (sessionStorage & Timestamp) ---
     window.addEventListener('DOMContentLoaded', () => {
-      const savedUser = localStorage.getItem(SESSION_KEY);
+      const savedUser = sessionStorage.getItem(SESSION_KEY);
       const savedAccordion = localStorage.getItem(ACCORDION_KEY);
       
       if (savedAccordion) {
@@ -443,6 +509,15 @@
       }
 
       if (savedUser) {
+        const lastActive = parseInt(sessionStorage.getItem(TIMESTAMP_KEY) || "0", 10);
+        const now = Date.now();
+
+        // Cek jika sudah lewat 15 menit tanpa aktivitas saat browser/tab baru dibangunkan
+        if (lastActive > 0 && (now - lastActive) >= IDLE_LIMIT) {
+          silentLogout();
+          return;
+        }
+
         try {
           currentUser = JSON.parse(savedUser);
           document.getElementById('user-greeting').innerText = `Halo, ${currentUser.name} (${currentUser.role})`;
@@ -458,12 +533,24 @@
           loadApps();
           startInactivityMonitor();
         } catch (e) {
-          localStorage.removeItem(SESSION_KEY);
+          sessionStorage.removeItem(SESSION_KEY);
         }
       }
     });
 
-    // --- TIMER INAKTIVITAS (15 MENIT) ---
+    // --- SENSOR VISIBILITY (Saat Komputer Sleep / Bangun) ---
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && currentUser && !isWorkingInApp) {
+        const lastActive = parseInt(sessionStorage.getItem(TIMESTAMP_KEY) || "0", 10);
+        if (lastActive > 0 && (Date.now() - lastActive) >= IDLE_LIMIT) {
+          silentLogout();
+        } else {
+          resetInactivityTimer();
+        }
+      }
+    });
+
+    // --- TIMER INAKTIVITAS (15 MENIT - SILENT LOGOUT) ---
     function startInactivityMonitor() {
       ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
         window.addEventListener(evt, resetInactivityTimer, true);
@@ -472,40 +559,27 @@
     }
 
     function resetInactivityTimer() {
-      if (isWarningShowing) return;
+      if (!currentUser || isWorkingInApp) return; // Dijeda jika bekerja di dalam Iframe
+      
+      sessionStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
       clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(showTimeoutWarning, IDLE_LIMIT);
+      inactivityTimer = setTimeout(silentLogout, IDLE_LIMIT);
     }
 
-    function showTimeoutWarning() {
-      isWarningShowing = true;
-      remainingSeconds = WARNING_TIME;
-      document.getElementById('countdown-text').innerText = remainingSeconds;
-      openModal('modal-timeout');
+    function silentLogout() {
+      currentUser = null;
+      isWorkingInApp = false;
+      clearTimeout(inactivityTimer);
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(TIMESTAMP_KEY);
 
-      clearInterval(countdownInterval);
-      countdownInterval = setInterval(() => {
-        remainingSeconds--;
-        document.getElementById('countdown-text').innerText = remainingSeconds;
-
-        if (remainingSeconds <= 0) {
-          clearInterval(countdownInterval);
-          closeModal('modal-timeout');
-          autoLogoutDueToInactivity();
-        }
-      }, 1000);
-    }
-
-    function extendSession() {
-      isWarningShowing = false;
-      clearInterval(countdownInterval);
-      closeModal('modal-timeout');
-      resetInactivityTimer();
-      showToast("Sesi berhasil diperpanjang 15 menit ke depan.", "info");
-    }
-
-    function autoLogoutDueToInactivity() {
-      logout();
+      document.getElementById('username').value = "";
+      document.getElementById('password').value = "";
+      document.getElementById('btn-manage-users').classList.add('hidden-section');
+      document.getElementById('btn-reorder-modal').classList.add('hidden-section');
+      document.getElementById('btn-add-modal').classList.add('hidden-section');
+      closeViewer();
+      showSection('login-section');
       showToast("Anda telah otomatis keluar karena tidak ada aktivitas selama 15 menit.", "error");
     }
 
@@ -585,7 +659,9 @@
 
         if (res.success) {
           currentUser = res.user;
-          localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+          sessionStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
+
           document.getElementById('user-greeting').innerText = `Halo, ${currentUser.name} (${currentUser.role})`;
           
           if (currentUser.role === "SuperAdmin") {
@@ -674,7 +750,6 @@
         return;
       }
 
-      // Kelompokkan aplikasi berdasarkan kategori
       const grouped = {};
       list.forEach(app => {
         const catName = app.category.trim() || "LAINNYA";
@@ -682,7 +757,6 @@
         grouped[catName].push(app);
       });
 
-      // Render setiap kelompok kategori
       Object.keys(grouped).forEach(category => {
         if (categoryStates[category] === undefined) {
           categoryStates[category] = true;
@@ -694,7 +768,6 @@
         const section = document.createElement('div');
         section.className = "space-y-3";
 
-        // Judul Kategori (Klik untuk Lipat/Buka)
         const headerBtn = document.createElement('button');
         headerBtn.type = "button";
         headerBtn.className = "w-full flex items-center justify-between px-4 py-2.5 bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition group text-left";
@@ -714,12 +787,13 @@
 
         section.appendChild(headerBtn);
 
-        // Grid Kartu: 2 kolom di HP, 3 atau 4 kolom di Laptop/PC
         const grid = document.createElement('div');
         grid.className = `grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 transition-all duration-200 ${isExpanded ? '' : 'hidden-section'}`;
 
         appsInCategory.forEach(app => {
           const isSuperAdmin = currentUser && currentUser.role === "SuperAdmin";
+          const hasShareLink = app.extUrl && app.extUrl.trim() !== "";
+
           const card = document.createElement('div');
           card.className = "bg-slate-800/90 border border-slate-700/80 hover:border-blue-500/50 rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition group shadow-lg";
           
@@ -727,12 +801,15 @@
             <div>
               <div class="flex justify-between items-start mb-2 sm:mb-3">
                 <span class="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 truncate max-w-[100px] sm:max-w-none">${app.category}</span>
-                ${isSuperAdmin ? `
-                  <div class="flex space-x-1.5 sm:space-x-2 ml-1">
+                <div class="flex space-x-1.5 sm:space-x-2 ml-1 items-center">
+                  ${hasShareLink ? `
+                    <button onclick="openShareModal('${app.id}')" title="Berbagi Link Sekolah/Umum" class="text-cyan-400 hover:text-cyan-300 text-xs transition px-1"><i class="fa-solid fa-share-nodes"></i></button>
+                  ` : ''}
+                  ${isSuperAdmin ? `
                     <button onclick="openEditApp('${app.id}')" title="Edit Aplikasi" class="text-slate-500 hover:text-blue-400 text-xs transition"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button onclick="confirmDeleteApp('${app.id}')" title="Hapus Aplikasi" class="text-slate-500 hover:text-rose-400 text-xs transition"><i class="fa-solid fa-trash"></i></button>
-                  </div>
-                ` : ''}
+                  ` : ''}
+                </div>
               </div>
               <h3 class="font-bold text-sm sm:text-base group-hover:text-blue-400 transition mb-1 text-slate-100 line-clamp-2">${app.name}</h3>
             </div>
@@ -747,6 +824,55 @@
 
         section.appendChild(grid);
         container.appendChild(section);
+      });
+    }
+
+    // --- MODAL BERBAGI EKSTERNAL (fa-share-nodes) ---
+    function openShareModal(appId) {
+      const app = appsData.find(item => item.id === appId);
+      if (!app || !app.extUrl) return;
+
+      activeShareData = {
+        url: app.extUrl || "",
+        user: app.extUser || "",
+        pass: app.extPass || ""
+      };
+
+      document.getElementById('share-app-name').innerText = app.name;
+      document.getElementById('share-badge-type').innerText = app.extType || "Sekolah";
+      document.getElementById('share-note').innerText = app.extNote || "Link referensi eksternal untuk dibagikan.";
+      
+      document.getElementById('share-url-text').innerText = activeShareData.url;
+      document.getElementById('share-url-link').href = activeShareData.url;
+
+      const userBox = document.getElementById('share-user-box');
+      const passBox = document.getElementById('share-pass-box');
+
+      if (activeShareData.user) {
+        document.getElementById('share-user-text').innerText = activeShareData.user;
+        userBox.classList.remove('hidden-section');
+      } else {
+        userBox.classList.add('hidden-section');
+      }
+
+      if (activeShareData.pass) {
+        document.getElementById('share-pass-text').innerText = activeShareData.pass;
+        passBox.classList.remove('hidden-section');
+      } else {
+        passBox.classList.add('hidden-section');
+      }
+
+      openModal('modal-share-ext');
+    }
+
+    function copyShareText(type) {
+      let textToCopy = "";
+      if (type === 'url') textToCopy = activeShareData.url;
+      if (type === 'user') textToCopy = activeShareData.user;
+      if (type === 'pass') textToCopy = activeShareData.pass;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        showToast("Teks berhasil disalin ke clipboard!");
       });
     }
 
@@ -870,6 +996,9 @@
       const app = appsData.find(item => item.id === appId);
       if (!app) return;
 
+      isWorkingInApp = true; // PAUSE hitung mundur 15 menit agar aman berjam-jam
+      clearTimeout(inactivityTimer);
+
       document.getElementById('viewer-title').innerText = app.name;
       document.getElementById('app-frame').src = app.url;
 
@@ -889,6 +1018,8 @@
 
     function closeViewer() {
       document.getElementById('app-frame').src = "";
+      isWorkingInApp = false; // AKTIFKAN KEMBALI hitung mundur 15 menit
+      resetInactivityTimer();
       showSection('dashboard-section');
     }
 
@@ -922,6 +1053,14 @@
       document.getElementById('app-url').value = app.url;
       document.getElementById('app-user-cred').value = app.usernameApp || "";
       document.getElementById('app-pass-cred').value = app.passwordApp || "";
+      
+      // Data Eksternal Share
+      document.getElementById('app-ext-type').value = app.extType || "";
+      document.getElementById('app-ext-url').value = app.extUrl || "";
+      document.getElementById('app-ext-user').value = app.extUser || "";
+      document.getElementById('app-ext-pass').value = app.extPass || "";
+      document.getElementById('app-ext-note').value = app.extNote || "";
+
       openModal('modal-app');
     }
 
@@ -939,7 +1078,13 @@
           category: document.getElementById('app-category').value.trim(),
           url: document.getElementById('app-url').value.trim(),
           usernameApp: document.getElementById('app-user-cred').value.trim(),
-          passwordApp: document.getElementById('app-pass-cred').value.trim()
+          passwordApp: document.getElementById('app-pass-cred').value.trim(),
+          // Data Eksternal Share
+          extType: document.getElementById('app-ext-type').value,
+          extUrl: document.getElementById('app-ext-url').value.trim(),
+          extUser: document.getElementById('app-ext-user').value.trim(),
+          extPass: document.getElementById('app-ext-pass').value.trim(),
+          extNote: document.getElementById('app-ext-note').value.trim()
         }
       };
 
@@ -1148,7 +1293,6 @@
 
       const userAllowedArray = (user.allowedApps || "").split(",").map(i => i.trim());
 
-      // Kelompokkan aplikasi berdasarkan kategori
       const grouped = {};
       appsData.forEach(app => {
         const catName = app.category.trim() || "LAINNYA";
@@ -1156,18 +1300,15 @@
         grouped[catName].push(app);
       });
 
-      // Render setiap Kategori (Parent) & Anak Aplikasi (Child)
       Object.keys(grouped).forEach(catName => {
         const appsInCat = grouped[catName];
         const allChecked = appsInCat.every(app => userAllowedArray.includes(app.id));
 
-        // BUAT ID YANG AMAN DARI SPASI (misal: "Guru Pengganti" -> "Guru_Pengganti")
         const safeCatId = catName.replace(/[^a-zA-Z0-9]/g, '_');
 
         const catBox = document.createElement('div');
         catBox.className = "bg-slate-900/90 border border-slate-700/80 rounded-xl p-3";
 
-        // 1. Buat Checkbox Induk (Kategori) dengan ID yang aman
         const parentLabel = document.createElement('label');
         parentLabel.className = "flex items-center space-x-2.5 font-bold text-slate-100 cursor-pointer pb-2.5 border-b border-slate-800";
         parentLabel.innerHTML = `
@@ -1178,7 +1319,6 @@
         `;
         catBox.appendChild(parentLabel);
 
-        // 2. Buat Checkbox Anak (Daftar Aplikasi dalam Kategori)
         const childContainer = document.createElement('div');
         childContainer.className = "space-y-2 pt-2.5 pl-6";
 
@@ -1197,7 +1337,6 @@
         catBox.appendChild(childContainer);
         container.appendChild(catBox);
 
-        // 3. Pasang Event Listener menggunakan safeCatId
         const parentCheckbox = catBox.querySelector(`#cat-checkbox-${safeCatId}`);
         const childBoxes = catBox.querySelectorAll('input[name="rbac-app-item"]');
 
@@ -1219,7 +1358,7 @@
 
       openModal('modal-rbac');
     }
-    // Fungsi Pilih Semua / Hapus Semua di Modal RBAC
+
     function selectAllRBAC(checkStatus) {
       document.querySelectorAll('#rbac-checkbox-list input[type="checkbox"]').forEach(cb => {
         cb.checked = checkStatus;
@@ -1273,10 +1412,10 @@
     // --- KELUAR / LOGOUT ---
     function logout() {
       currentUser = null;
-      isWarningShowing = false;
+      isWorkingInApp = false;
       clearTimeout(inactivityTimer);
-      clearInterval(countdownInterval);
-      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(TIMESTAMP_KEY);
       localStorage.removeItem(ACCORDION_KEY);
 
       document.getElementById('username').value = "";
