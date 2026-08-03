@@ -1278,10 +1278,37 @@ document.getElementById('form-rbac').addEventListener('submit', async function(e
 // 9. AKTIFKAN PENDENGAR PERUBAHAN REAL-TIME (WEB-SOCKET)
 // ======================================================
 function setupRealtimeListener() {
+  // 1. SENSOR UNTUK TABEL APLIKASI (APPS)
   supabaseClient
     .channel('public:apps')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'apps' }, () => {
-      loadApps(); // Muat ulang tampilan grid otomatis saat ada ubahan di database
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'apps' }, (payload) => {
+      console.log('Perubahan data aplikasi:', payload);
+      loadApps(); // Muat ulang tampilan grid otomatis
+    })
+    .subscribe();
+
+  // 2. SENSOR UNTUK TABEL PENGGUNA (USERS) -> Khusus SuperAdmin
+  supabaseClient
+    .channel('public:users')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, async (payload) => {
+      console.log('Perubahan data pengguna:', payload);
+      
+      // Jika yang login adalah SuperAdmin
+      if (currentUser && currentUser.role === "SuperAdmin") {
+        // Cek apakah ada pendaftaran baru (INSERT) yang statusnya Pending
+        if (payload.eventType === 'INSERT' && payload.new.status === 'Pending') {
+          showToast(`Ada pendaftaran akun baru: @${payload.new.username}!`, "info");
+        }
+        
+        // Update angka merah (badge) antrean Pending secara instan
+        await checkPendingUsers();
+        
+        // Jika modal Kelola User sedang terbuka di layar, refresh tabelnya langsung
+        const userModal = document.getElementById('modal-users');
+        if (userModal && !userModal.classList.contains('hidden-section')) {
+          renderUsersTable();
+        }
+      }
     })
     .subscribe();
 }
