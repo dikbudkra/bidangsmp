@@ -446,7 +446,7 @@ if ('serviceWorker' in navigator) {
 // 1. KONFIGURASI SUPABASE (GANTI DENGAN MILIK ANDA!)
 // ======================================================
 const SUPABASE_URL = "https://tmtzbzkdtwigiwfizahi.supabase.co"; // Ganti URL Anda
-const SUPABASE_KEY = "sb_publishable_X7_wKpTIErVGhu81ieIR6g_dbcEFnUQ"; // Ganti Anon Key Anda
+const SUPABASE_KEY = "sb_publishable_X7_wK..."; // Ganti Anon Key Anda
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const SESSION_KEY = "smp_portal_user_session";
@@ -462,7 +462,7 @@ let activeShareData = { url: "", user: "", pass: "" };
 let draggedItem = null;
 let categoryStates = {};
 let inactivityTimer = null;
-let isWorkingInApp = false;
+let isWorkingInApp = false; // Mode fokus aman saat membuka aplikasi
 
 // --- CEK SESI (sessionStorage & Timestamp) ---
 window.addEventListener('DOMContentLoaded', () => {
@@ -474,6 +474,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if (savedUser) {
     const lastActive = parseInt(sessionStorage.getItem(TIMESTAMP_KEY) || "0", 10);
     const now = Date.now();
+    // Cek jika sudah lewat 15 menit tanpa aktivitas saat browser/tab baru dibangunkan
     if (lastActive > 0 && (now - lastActive) >= IDLE_LIMIT) {
       silentLogout();
       return;
@@ -509,7 +510,7 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-// --- TIMER INAKTIVITAS 15 MENIT ---
+// --- TIMER INAKTIVITAS (15 MENIT - SILENT LOGOUT) ---
 function startInactivityMonitor() {
   ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
     window.addEventListener(evt, resetInactivityTimer, true);
@@ -518,7 +519,7 @@ function startInactivityMonitor() {
 }
 
 function resetInactivityTimer() {
-  if (!currentUser || isWorkingInApp) return;
+  if (!currentUser || isWorkingInApp) return; // Dijeda jika bekerja di dalam Iframe
   sessionStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
   clearTimeout(inactivityTimer);
   inactivityTimer = setTimeout(silentLogout, IDLE_LIMIT);
@@ -937,11 +938,11 @@ async function saveNewOrder() {
   }
 }
 
-// --- IFRAME VIEWER ---
+// --- IFRAME VIEWER DENGAN TOP BAR COPY ---
 function openAppViewer(appId) {
   const app = appsData.find(item => item.id === appId);
   if (!app) return;
-  isWorkingInApp = true;
+  isWorkingInApp = true; // PAUSE hitung mundur 15 menit agar aman berjam-jam
   clearTimeout(inactivityTimer);
   document.getElementById('viewer-title').innerText = app.name;
   document.getElementById('app-frame').src = app.url;
@@ -958,7 +959,7 @@ function openAppViewer(appId) {
 
 function closeViewer() {
   document.getElementById('app-frame').src = "";
-  isWorkingInApp = false;
+  isWorkingInApp = false; // AKTIFKAN KEMBALI hitung mundur 15 menit
   resetInactivityTimer();
   showSection('dashboard-section');
 }
@@ -974,7 +975,7 @@ function copyCredential(type) {
 }
 
 // ======================================================
-// 6. TAMBAH / EDIT APLIKASI VIA SUPABASE
+// 6. TAMBAH / EDIT APLIKASI VIA SUPABASE (DENGAN KUNCI POSISI)
 // ======================================================
 function openAppModal() {
   document.getElementById('app-modal-title').innerText = "Tambah Aplikasi Baru";
@@ -1010,16 +1011,15 @@ document.getElementById('form-app').addEventListener('submit', async function(e)
   const existingId = document.getElementById('app-id').value;
   const currentId = existingId || ("APP-" + Date.now());
 
-  // 1. CARI TAHU: Apakah ini edit aplikasi lama atau tambah baru?
-  let preservedOrderIndex = 99; // Default untuk aplikasi baru
+  // Mempertahankan order_index asli apabila ini adalah proses edit aplikasi
+  let preservedOrderIndex = 99; // Nilai default untuk aplikasi yang baru dibuat
   if (existingId) {
     const existingApp = appsData.find(item => item.id === existingId);
     if (existingApp && existingApp.order_index !== undefined) {
-      preservedOrderIndex = existingApp.order_index; // Pertahankan nomor urut asli!
+      preservedOrderIndex = existingApp.order_index;
     }
   }
 
-  // 2. SIAPKAN DATA PESANAN
   const payload = {
     id: currentId,
     name: document.getElementById('app-name').value.trim(),
@@ -1032,22 +1032,8 @@ document.getElementById('form-app').addEventListener('submit', async function(e)
     ext_user: document.getElementById('app-ext-user').value.trim(),
     ext_pass: document.getElementById('app-ext-pass').value.trim(),
     ext_note: document.getElementById('app-ext-note').value.trim(),
-    order_index: preservedOrderIndex // <--- SUDAH AMAN! Tidak akan mereset ke 99 saat diedit
+    order_index: preservedOrderIndex
   };
-
-  try {
-    const { error } = await supabaseClient.from('apps').upsert(payload);
-    if (error) throw error;
-    showToast("Aplikasi berhasil disimpan!");
-    closeModal('modal-app');
-    loadApps();
-  } catch (err) {
-    showToast("Gagal menyimpan aplikasi.", "error");
-  } finally {
-    btn.innerText = "Simpan";
-    btn.disabled = false;
-  }
-});
 
   try {
     const { error } = await supabaseClient.from('apps').upsert(payload);
@@ -1301,35 +1287,40 @@ document.getElementById('form-rbac').addEventListener('submit', async function(e
 });
 
 // ======================================================
-// 9. AKTIFKAN PENDENGAR PERUBAHAN REAL-TIME (WEB-SOCKET)
+// 9. SENSOR REAL-TIME LENGKAP (WEB-SOCKET)
 // ======================================================
 function setupRealtimeListener() {
   // 1. SENSOR UNTUK TABEL APLIKASI (APPS)
   supabaseClient
     .channel('public:apps')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'apps' }, (payload) => {
-      console.log('Perubahan data aplikasi:', payload);
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'apps' }, () => {
       loadApps(); // Muat ulang tampilan grid otomatis
     })
     .subscribe();
 
-  // 2. SENSOR UNTUK TABEL PENGGUNA (USERS) -> Khusus SuperAdmin
+  // 2. SENSOR UNTUK TABEL PENGGUNA (USERS) -> SuperAdmin & Real-time RBAC
   supabaseClient
     .channel('public:users')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, async (payload) => {
-      console.log('Perubahan data pengguna:', payload);
-      
-      // Jika yang login adalah SuperAdmin
+      // A. JIKA YANG BERUBAH ADALAH AKUN SAYA SENDIRI (Real-time RBAC / Status)
+      if (currentUser && payload.eventType === 'UPDATE' && payload.new.username === currentUser.username) {
+        if (payload.new.status !== 'Aktif') {
+          alert("Akun Anda telah dinonaktifkan oleh Administrator.");
+          logout();
+          return;
+        }
+        currentUser = payload.new;
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+        showToast("Hak akses Anda telah diperbarui oleh SuperAdmin.", "info");
+        loadApps();
+      }
+
+      // B. KHUSUS FITUR ADMIN: Notifikasi Pendaftaran & Refresh Tabel User
       if (currentUser && currentUser.role === "SuperAdmin") {
-        // Cek apakah ada pendaftaran baru (INSERT) yang statusnya Pending
         if (payload.eventType === 'INSERT' && payload.new.status === 'Pending') {
           showToast(`Ada pendaftaran akun baru: @${payload.new.username}!`, "info");
         }
-        
-        // Update angka merah (badge) antrean Pending secara instan
         await checkPendingUsers();
-        
-        // Jika modal Kelola User sedang terbuka di layar, refresh tabelnya langsung
         const userModal = document.getElementById('modal-users');
         if (userModal && !userModal.classList.contains('hidden-section')) {
           renderUsersTable();
