@@ -1007,7 +1007,19 @@ document.getElementById('form-app').addEventListener('submit', async function(e)
   btn.innerText = "Menyimpan...";
   btn.disabled = true;
 
-  const currentId = document.getElementById('app-id').value || ("APP-" + Date.now());
+  const existingId = document.getElementById('app-id').value;
+  const currentId = existingId || ("APP-" + Date.now());
+
+  // 1. CARI TAHU: Apakah ini edit aplikasi lama atau tambah baru?
+  let preservedOrderIndex = 99; // Default untuk aplikasi baru
+  if (existingId) {
+    const existingApp = appsData.find(item => item.id === existingId);
+    if (existingApp && existingApp.order_index !== undefined) {
+      preservedOrderIndex = existingApp.order_index; // Pertahankan nomor urut asli!
+    }
+  }
+
+  // 2. SIAPKAN DATA PESANAN
   const payload = {
     id: currentId,
     name: document.getElementById('app-name').value.trim(),
@@ -1020,8 +1032,22 @@ document.getElementById('form-app').addEventListener('submit', async function(e)
     ext_user: document.getElementById('app-ext-user').value.trim(),
     ext_pass: document.getElementById('app-ext-pass').value.trim(),
     ext_note: document.getElementById('app-ext-note').value.trim(),
-    order_index: 99
+    order_index: preservedOrderIndex // <--- SUDAH AMAN! Tidak akan mereset ke 99 saat diedit
   };
+
+  try {
+    const { error } = await supabaseClient.from('apps').upsert(payload);
+    if (error) throw error;
+    showToast("Aplikasi berhasil disimpan!");
+    closeModal('modal-app');
+    loadApps();
+  } catch (err) {
+    showToast("Gagal menyimpan aplikasi.", "error");
+  } finally {
+    btn.innerText = "Simpan";
+    btn.disabled = false;
+  }
+});
 
   try {
     const { error } = await supabaseClient.from('apps').upsert(payload);
