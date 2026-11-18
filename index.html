@@ -112,10 +112,10 @@
 </footer>
 </section>
 
-<!-- 3. IFRAME VIEWER DENGAN TOP BAR AUTO-HIDE & FLOATING PILL -->
+<!-- 3. IFRAME VIEWER DENGAN TOP BAR AUTO-HIDE TOTAL & EDGE TRIGGER -->
 <section id="viewer-section" class="hidden-section fixed inset-0 bg-slate-950 z-40">
-  <!-- TOP BAR OVERLAY (Menutup banner GAS saat tampil, auto-hide setelah 3.5 detik) -->
-  <div id="viewer-topbar" class="fixed top-0 left-0 right-0 z-50 bg-slate-800/95 backdrop-blur-md px-3 sm:px-6 py-2.5 pt-[calc(0.625rem+env(safe-area-inset-top))] flex flex-wrap justify-between items-center border-b border-slate-700/80 gap-2 shadow-2xl transition-transform duration-300 ease-out">
+  <!-- TOP BAR OVERLAY (Menutup banner GAS saat tampil, auto-hide total setelah 3 detik) -->
+  <div id="viewer-topbar" onmouseenter="clearTimeout(topbarAutoHideTimer)" onmouseleave="scheduleTopbarAutoHide()" class="fixed top-0 left-0 right-0 z-50 bg-slate-800/95 backdrop-blur-md px-3 sm:px-6 py-2.5 pt-[calc(0.625rem+env(safe-area-inset-top))] flex flex-wrap justify-between items-center border-b border-slate-700/80 gap-2 shadow-2xl transition-transform duration-300 ease-out">
     <div class="flex items-center space-x-2 sm:space-x-3">
       <button onclick="closeViewer()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs sm:text-sm font-medium transition flex items-center shadow-sm">
         <i class="fa-solid fa-arrow-left mr-1.5 sm:mr-2"></i> Kembali
@@ -146,15 +146,9 @@
     </div>
   </div>
 
-  <!-- FLOATING PILL (Muncul saat Top Bar Auto-Hide) -->
-  <div id="viewer-floating-pill" class="hidden-section fixed top-2 mt-[env(safe-area-inset-top)] left-1/2 -translate-x-1/2 z-50 flex items-center bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-full shadow-2xl px-1.5 py-1 space-x-1 fade-in">
-    <button type="button" onclick="closeViewer()" title="Kembali ke Dashboard" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-full text-xs font-medium transition flex items-center">
-      <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
-    </button>
-    <button type="button" onclick="expandTopbar()" title="Tampilkan Top Bar & Kredensial" class="px-2.5 py-1 hover:bg-slate-800 text-slate-300 rounded-full text-xs font-medium transition flex items-center space-x-1.5 max-w-[160px] sm:max-w-xs">
-      <span id="pill-title" class="truncate">Menu</span>
-      <i class="fa-solid fa-chevron-down text-[10px] text-blue-400"></i>
-    </button>
+  <!-- EDGE TRIGGER & MINI HANDLE TIPIS (0% menutupi konten aplikasi) -->
+  <div id="viewer-edge-trigger" onmouseenter="expandTopbar()" onclick="expandTopbar()" title="Ketuk atau arahkan kursor ke sini untuk menampilkan Top Bar" class="hidden-section fixed top-0 left-0 right-0 h-3 pt-[calc(0.25rem+env(safe-area-inset-top))] z-50 flex justify-center items-start cursor-pointer">
+    <div class="w-14 h-1 rounded-full bg-slate-400/50 hover:bg-blue-400/80 shadow-sm transition-colors"></div>
   </div>
 
   <div class="w-full h-full bg-white relative">
@@ -1079,28 +1073,28 @@ async function saveNewOrder() {
   }
 }
 
-// --- IFRAME VIEWER DENGAN TOP BAR AUTO-HIDE & FLOATING PILL ---
+// --- IFRAME VIEWER DENGAN TOP BAR AUTO-HIDE TOTAL, EDGE TRIGGER & PWA BACK GESTURE ---
 function scheduleTopbarAutoHide() {
   clearTimeout(topbarAutoHideTimer);
   if (isTopbarPinned) return;
   topbarAutoHideTimer = setTimeout(() => {
     collapseTopbar();
-  }, 3500);
+  }, 3000);
 }
 
 function collapseTopbar() {
   clearTimeout(topbarAutoHideTimer);
   const topbar = document.getElementById('viewer-topbar');
-  const pill = document.getElementById('viewer-floating-pill');
+  const trigger = document.getElementById('viewer-edge-trigger');
   if (topbar) topbar.classList.add('-translate-y-full');
-  if (pill) pill.classList.remove('hidden-section');
+  if (trigger) trigger.classList.remove('hidden-section');
 }
 
 function expandTopbar() {
   const topbar = document.getElementById('viewer-topbar');
-  const pill = document.getElementById('viewer-floating-pill');
+  const trigger = document.getElementById('viewer-edge-trigger');
   if (topbar) topbar.classList.remove('-translate-y-full');
-  if (pill) pill.classList.add('hidden-section');
+  if (trigger) trigger.classList.add('hidden-section');
   scheduleTopbarAutoHide();
 }
 
@@ -1120,6 +1114,13 @@ function togglePinTopbar() {
   }
 }
 
+window.addEventListener('popstate', () => {
+  const viewerSection = document.getElementById('viewer-section');
+  if (viewerSection && !viewerSection.classList.contains('hidden-section')) {
+    closeViewer(true);
+  }
+});
+
 function openAppViewer(appId) {
  const app = appsData.find(item => item.id === appId);
  if (!app) return;
@@ -1129,8 +1130,6 @@ function openAppViewer(appId) {
  recordRecentApp(app.id);
 
  document.getElementById('viewer-title').innerText = app.name;
- const pillTitle = document.getElementById('pill-title');
- if (pillTitle) pillTitle.innerText = app.name;
 
  // --- MULAI PERUBAHAN ANTI-CACHE ---
  const timeStamp = new Date().getTime();
@@ -1148,16 +1147,29 @@ function openAppViewer(appId) {
  const boxPass = document.getElementById('box-pass');
  boxUser.classList.toggle('hidden-section', !activeAppCredentials.user);
  boxPass.classList.toggle('hidden-section', !activeAppCredentials.pass);
+
+ if (!history.state || !history.state.viewer) {
+   history.pushState({ viewer: true }, '');
+ }
+
  showSection('viewer-section');
  expandTopbar();
 }
 
-function closeViewer() {
+function closeViewer(fromPopstate = false) {
   clearTimeout(topbarAutoHideTimer);
+  const viewerSection = document.getElementById('viewer-section');
+  if (viewerSection && viewerSection.classList.contains('hidden-section')) return;
+
   document.getElementById('app-frame').src = "";
   isWorkingInApp = false; // AKTIFKAN KEMBALI hitung mundur 15 menit
   resetInactivityTimer();
   showSection('dashboard-section');
+
+  if (!fromPopstate && history.state && history.state.viewer) {
+    history.back();
+  }
+
   const keyword = (document.getElementById('search-input')?.value || "").toLowerCase().trim();
   if (!keyword && appsData.length > 0) {
     renderApps(appsData);
