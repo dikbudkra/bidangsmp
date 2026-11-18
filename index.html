@@ -112,33 +112,54 @@
 </footer>
 </section>
 
-<!-- 3. IFRAME VIEWER DENGAN TOP BAR COPY (TANPA FOOTER) -->
-<section id="viewer-section" class="hidden-section fixed inset-0 bg-slate-950 flex flex-col z-40">
-<div class="bg-slate-800 px-4 sm:px-8 py-3 flex flex-wrap justify-between items-center border-b border-slate-700 gap-3">
-  <div class="flex items-center space-x-3">
-    <button onclick="closeViewer()" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs sm:text-sm font-medium transition flex items-center shadow-sm">
-      <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+<!-- 3. IFRAME VIEWER DENGAN TOP BAR AUTO-HIDE & FLOATING PILL -->
+<section id="viewer-section" class="hidden-section fixed inset-0 bg-slate-950 relative z-40">
+  <!-- TOP BAR OVERLAY (Menutup banner GAS saat tampil, auto-hide setelah 3.5 detik) -->
+  <div id="viewer-topbar" class="fixed top-0 left-0 right-0 z-50 bg-slate-800/95 backdrop-blur-md px-3 sm:px-6 py-2.5 pt-[calc(0.625rem+env(safe-area-inset-top))] flex flex-wrap justify-between items-center border-b border-slate-700/80 gap-2 shadow-2xl transition-transform duration-300 ease-out">
+    <div class="flex items-center space-x-2 sm:space-x-3">
+      <button onclick="closeViewer()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs sm:text-sm font-medium transition flex items-center shadow-sm">
+        <i class="fa-solid fa-arrow-left mr-1.5 sm:mr-2"></i> Kembali
+      </button>
+      <span id="viewer-title" class="font-bold text-slate-100 text-xs sm:text-base truncate max-w-[140px] sm:max-w-md">Nama Aplikasi</span>
+    </div>
+    <div class="flex items-center space-x-1.5 sm:space-x-2.5">
+      <div id="viewer-credentials" class="flex items-center space-x-1.5 sm:space-x-2.5 text-xs">
+        <div id="box-user" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1 space-x-1.5 shadow-md">
+          <span class="text-slate-400">User: <strong class="text-slate-100 font-mono tracking-wide">......</strong></span>
+          <button type="button" id="btn-copy-user" onclick="copyCredential('user')" class="text-slate-400 hover:text-blue-400 transition text-sm pl-0.5" title="Salin Username">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+        </div>
+        <div id="box-pass" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-xl px-2.5 py-1 space-x-1.5 shadow-md">
+          <span class="text-slate-400">Pass: <strong class="text-slate-100 font-mono tracking-wide">......</strong></span>
+          <button type="button" id="btn-copy-pass" onclick="copyCredential('pass')" class="text-slate-400 hover:text-blue-400 transition text-sm pl-0.5" title="Salin Password">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+        </div>
+      </div>
+      <button type="button" id="btn-pin-topbar" onclick="togglePinTopbar()" title="Kunci / Pin Top Bar (Misal untuk tutup banner GAS)" class="px-2.5 py-1.5 bg-slate-700/80 hover:bg-slate-600 text-slate-300 rounded-xl text-xs transition flex items-center">
+        <i class="fa-solid fa-thumbtack"></i>
+      </button>
+      <button type="button" onclick="collapseTopbar()" title="Sembunyikan Top Bar" class="px-2.5 py-1.5 bg-slate-700/80 hover:bg-slate-600 text-slate-300 rounded-xl text-xs transition flex items-center">
+        <i class="fa-solid fa-chevron-up"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- FLOATING PILL (Muncul saat Top Bar Auto-Hide) -->
+  <div id="viewer-floating-pill" class="hidden-section fixed top-2 mt-[env(safe-area-inset-top)] left-1/2 -translate-x-1/2 z-50 flex items-center bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-full shadow-2xl px-1.5 py-1 space-x-1 fade-in">
+    <button type="button" onclick="closeViewer()" title="Kembali ke Dashboard" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-full text-xs font-medium transition flex items-center">
+      <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
     </button>
-    <span id="viewer-title" class="font-bold text-slate-100 text-sm sm:text-base truncate max-w-[180px] sm:max-w-md">Nama Aplikasi</span>
+    <button type="button" onclick="expandTopbar()" title="Tampilkan Top Bar & Kredensial" class="px-2.5 py-1 hover:bg-slate-800 text-slate-300 rounded-full text-xs font-medium transition flex items-center space-x-1.5 max-w-[160px] sm:max-w-xs">
+      <span id="pill-title" class="truncate">Menu</span>
+      <i class="fa-solid fa-chevron-down text-[10px] text-blue-400"></i>
+    </button>
   </div>
-  <div id="viewer-credentials" class="flex items-center space-x-2 sm:space-x-3 text-xs sm:text-sm mr-1 sm:mr-6">
-    <div id="box-user" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-1.5 space-x-2 shadow-md">
-      <span class="text-slate-400">User: <strong class="text-slate-100 font-mono tracking-wide">......</strong></span>
-      <button type="button" id="btn-copy-user" onclick="copyCredential('user')" class="text-slate-400 hover:text-blue-400 transition text-base pl-1" title="Salin Username">
-        <i class="fa-regular fa-copy"></i>
-      </button>
-    </div>
-    <div id="box-pass" class="hidden-section flex items-center bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-1.5 space-x-2 shadow-md">
-      <span class="text-slate-400">Pass: <strong class="text-slate-100 font-mono tracking-wide">......</strong></span>
-      <button type="button" id="btn-copy-pass" onclick="copyCredential('pass')" class="text-slate-400 hover:text-blue-400 transition text-base pl-1" title="Salin Password">
-        <i class="fa-regular fa-copy"></i>
-      </button>
-    </div>
+
+  <div class="w-full h-full bg-white relative">
+    <iframe id="app-frame" src="" class="w-full h-full border-0" allow="fullscreen; web-share"></iframe>
   </div>
-</div>
-<div class="flex-1 w-full bg-white relative">
-  <iframe id="app-frame" src="" class="w-full h-full border-0" allow="fullscreen; web-share"></iframe>
-</div>
 </section>
 
 <!-- 4. MODAL REGISTER AKUN -->
@@ -157,7 +178,12 @@
     </div>
     <div>
       <label class="block text-xs font-medium text-slate-300 mb-1">Password</label>
-      <input type="password" id="reg-pass" required placeholder="Minimal 6 digit, tanpa spasi" minlength="6" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+      <div class="relative">
+        <input type="password" id="reg-pass" required placeholder="Minimal 6 digit, tanpa spasi" minlength="6" class="w-full pl-3 pr-10 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm focus:border-blue-500 focus:outline-none">
+        <button type="button" onclick="togglePasswordVisibility('reg-pass', 'eye-icon-reg')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-200 focus:outline-none">
+          <i id="eye-icon-reg" class="fa-solid fa-eye text-sm"></i>
+        </button>
+      </div>
     </div>
     <div class="flex justify-end space-x-2 pt-3">
       <button type="button" onclick="closeModal('modal-register')" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-medium transition">Batal</button>
@@ -341,7 +367,12 @@
       </div>
       <div>
         <label class="block text-xs font-medium text-slate-300 mb-1">Password</label>
-        <input type="text" id="edit-user-password" required class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-mono text-amber-300 focus:border-blue-500 focus:outline-none">
+        <div class="relative">
+          <input type="password" id="edit-user-password" required class="w-full pl-3 pr-9 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-mono text-amber-300 focus:border-blue-500 focus:outline-none">
+          <button type="button" onclick="togglePasswordVisibility('edit-user-password', 'eye-icon-edit-user')" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-200 focus:outline-none">
+            <i id="eye-icon-edit-user" class="fa-solid fa-eye text-sm"></i>
+          </button>
+        </div>
       </div>
     </div>
     <div class="grid grid-cols-2 gap-3">
@@ -463,6 +494,8 @@ let draggedItem = null;
 let categoryStates = {};
 let inactivityTimer = null;
 let isWorkingInApp = false; // Mode fokus aman saat membuka aplikasi
+let isTopbarPinned = false;
+let topbarAutoHideTimer = null;
 
 // --- CEK SESI (sessionStorage & Timestamp) ---
 window.addEventListener('DOMContentLoaded', () => {
@@ -707,12 +740,146 @@ async function loadApps() {
   }
 }
 
+// --- HELPER FAVORIT & RIWAYAT TERAKHIR ---
+function getFavStorageKey() {
+  return currentUser ? `smp_fav_${currentUser.username}` : "smp_fav_guest";
+}
+
+function getRecentStorageKey() {
+  return currentUser ? `smp_recent_${currentUser.username}` : "smp_recent_guest";
+}
+
+function getFavorites() {
+  try { return JSON.parse(localStorage.getItem(getFavStorageKey()) || "[]"); }
+  catch (e) { return []; }
+}
+
+function toggleFavorite(appId, event) {
+  if (event) event.stopPropagation();
+  let favs = getFavorites();
+  if (favs.includes(appId)) {
+    favs = favs.filter(id => id !== appId);
+    showToast("Dihapus dari Aplikasi Favorit.", "info");
+  } else {
+    favs.unshift(appId);
+    showToast("Ditambahkan ke Aplikasi Favorit!");
+  }
+  localStorage.setItem(getFavStorageKey(), JSON.stringify(favs));
+  const keyword = (document.getElementById('search-input')?.value || "").toLowerCase().trim();
+  const filtered = keyword ? appsData.filter(a => a.name.toLowerCase().includes(keyword) || a.category.toLowerCase().includes(keyword)) : appsData;
+  renderApps(filtered);
+}
+
+function getRecentApps() {
+  try { return JSON.parse(localStorage.getItem(getRecentStorageKey()) || "[]"); }
+  catch (e) { return []; }
+}
+
+function recordRecentApp(appId) {
+  let recents = getRecentApps().filter(id => id !== appId);
+  recents.unshift(appId);
+  recents = recents.slice(0, 4);
+  localStorage.setItem(getRecentStorageKey(), JSON.stringify(recents));
+}
+
+function createAppCard(app, favoritesList) {
+  const isSuperAdmin = currentUser && currentUser.role === "SuperAdmin";
+  const hasShareLink = app.ext_url && app.ext_url.trim() !== "";
+  const isFav = favoritesList.includes(app.id);
+
+  const card = document.createElement('div');
+  card.className = "bg-slate-800/90 border border-slate-700/80 hover:border-blue-500/50 rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition group shadow-lg";
+  card.innerHTML = `
+    <div>
+      <div class="flex justify-between items-start mb-2 sm:mb-3">
+        <span class="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 truncate max-w-[100px] sm:max-w-none">${app.category}</span>
+        <div class="flex space-x-1.5 sm:space-x-2 ml-1 items-center">
+          <button onclick="toggleFavorite('${app.id}', event)" title="${isFav ? 'Hapus dari Favorit' : 'Tandai Favorit'}" class="${isFav ? 'text-amber-400 hover:text-amber-300' : 'text-slate-500 hover:text-amber-400'} text-xs transition px-0.5">
+            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+          </button>
+          ${hasShareLink ? `
+            <button onclick="openShareModal('${app.id}')" title="Berbagi Link Sekolah/Umum" class="text-cyan-400 hover:text-cyan-300 text-xs transition px-1"><i class="fa-solid fa-share-nodes"></i></button>
+          ` : ''}
+          ${isSuperAdmin ? `
+            <button onclick="openEditApp('${app.id}')" title="Edit Aplikasi" class="text-slate-500 hover:text-blue-400 text-xs transition"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button onclick="confirmDeleteApp('${app.id}')" title="Hapus Aplikasi" class="text-slate-500 hover:text-rose-400 text-xs transition"><i class="fa-solid fa-trash"></i></button>
+          ` : ''}
+        </div>
+      </div>
+      <h3 class="font-bold text-sm sm:text-base group-hover:text-blue-400 transition mb-1 text-slate-100 line-clamp-2">${app.name}</h3>
+    </div>
+    <button onclick="openAppViewer('${app.id}')" class="mt-4 sm:mt-5 w-full py-2 sm:py-2.5 bg-slate-700/60 group-hover:bg-blue-600 rounded-xl text-xs font-semibold transition flex items-center justify-center space-x-2">
+      <span>Buka Aplikasi</span>
+      <i class="fa-solid fa-arrow-right-long text-[10px]"></i>
+    </button>
+  `;
+  return card;
+}
+
 function renderApps(list) {
   const container = document.getElementById('apps-container');
   container.innerHTML = "";
   if (list.length === 0) {
     container.innerHTML = '<div class="text-center py-12 text-slate-500 text-sm">Belum ada aplikasi yang diizinkan untuk akun Anda.</div>';
     return;
+  }
+
+  const isSearching = (document.getElementById('search-input')?.value || "").trim() !== "";
+  const favoritesList = getFavorites();
+
+  if (!isSearching) {
+    // 1. SEKSI RIWAYAT TERAKHIR DIBUKA (Maks 4 aplikasi)
+    const recentIds = getRecentApps();
+    const recentApps = recentIds.map(id => list.find(a => a.id === id)).filter(Boolean);
+    if (recentApps.length > 0) {
+      const recentSection = document.createElement('div');
+      recentSection.className = "space-y-2.5";
+      recentSection.innerHTML = `
+        <div class="flex items-center space-x-2 px-1">
+          <i class="fa-solid fa-clock-rotate-left text-cyan-400 text-xs"></i>
+          <span class="font-bold text-xs uppercase tracking-wider text-slate-300">Baru Saja Dibuka</span>
+        </div>
+      `;
+      const recentGrid = document.createElement('div');
+      recentGrid.className = "grid grid-cols-2 sm:grid-cols-4 gap-2.5";
+      recentApps.forEach(app => {
+        const miniBtn = document.createElement('button');
+        miniBtn.type = "button";
+        miniBtn.onclick = () => openAppViewer(app.id);
+        miniBtn.className = "flex items-center justify-between px-3.5 py-2.5 bg-slate-800/80 hover:bg-slate-700/90 border border-slate-700/80 hover:border-cyan-500/50 rounded-xl text-left transition group shadow-sm";
+        miniBtn.innerHTML = `
+          <div class="min-w-0 pr-2">
+            <div class="text-xs font-semibold text-slate-100 group-hover:text-cyan-300 truncate">${app.name}</div>
+            <div class="text-[10px] text-slate-400 truncate">${app.category}</div>
+          </div>
+          <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-500 group-hover:text-cyan-400 flex-shrink-0"></i>
+        `;
+        recentGrid.appendChild(miniBtn);
+      });
+      recentSection.appendChild(recentGrid);
+      container.appendChild(recentSection);
+    }
+
+    // 2. SEKSI APLIKASI FAVORIT
+    const favApps = list.filter(app => favoritesList.includes(app.id));
+    if (favApps.length > 0) {
+      const favSection = document.createElement('div');
+      favSection.className = "space-y-3";
+      favSection.innerHTML = `
+        <div class="flex items-center justify-between px-4 py-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+          <div class="flex items-center space-x-2.5">
+            <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+            <span class="font-bold text-sm text-amber-200">Aplikasi Favorit</span>
+          </div>
+          <span class="text-xs text-amber-300 bg-slate-900/80 px-2.5 py-0.5 rounded-full border border-amber-500/30">${favApps.length} Layanan</span>
+        </div>
+      `;
+      const favGrid = document.createElement('div');
+      favGrid.className = "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4";
+      favApps.forEach(app => favGrid.appendChild(createAppCard(app, favoritesList)));
+      favSection.appendChild(favGrid);
+      container.appendChild(favSection);
+    }
   }
 
   const grouped = {};
@@ -754,33 +921,7 @@ function renderApps(list) {
     grid.className = `grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 transition-all duration-200 ${isExpanded ? '' : 'hidden-section'}`;
 
     appsInCategory.forEach(app => {
-      const isSuperAdmin = currentUser && currentUser.role === "SuperAdmin";
-      const hasShareLink = app.ext_url && app.ext_url.trim() !== "";
-
-      const card = document.createElement('div');
-      card.className = "bg-slate-800/90 border border-slate-700/80 hover:border-blue-500/50 rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition group shadow-lg";
-      card.innerHTML = `
-        <div>
-          <div class="flex justify-between items-start mb-2 sm:mb-3">
-            <span class="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 truncate max-w-[100px] sm:max-w-none">${app.category}</span>
-            <div class="flex space-x-1.5 sm:space-x-2 ml-1 items-center">
-              ${hasShareLink ? `
-                <button onclick="openShareModal('${app.id}')" title="Berbagi Link Sekolah/Umum" class="text-cyan-400 hover:text-cyan-300 text-xs transition px-1"><i class="fa-solid fa-share-nodes"></i></button>
-              ` : ''}
-              ${isSuperAdmin ? `
-                <button onclick="openEditApp('${app.id}')" title="Edit Aplikasi" class="text-slate-500 hover:text-blue-400 text-xs transition"><i class="fa-solid fa-pen-to-square"></i></button>
-                <button onclick="confirmDeleteApp('${app.id}')" title="Hapus Aplikasi" class="text-slate-500 hover:text-rose-400 text-xs transition"><i class="fa-solid fa-trash"></i></button>
-              ` : ''}
-            </div>
-          </div>
-          <h3 class="font-bold text-sm sm:text-base group-hover:text-blue-400 transition mb-1 text-slate-100 line-clamp-2">${app.name}</h3>
-        </div>
-        <button onclick="openAppViewer('${app.id}')" class="mt-4 sm:mt-5 w-full py-2 sm:py-2.5 bg-slate-700/60 group-hover:bg-blue-600 rounded-xl text-xs font-semibold transition flex items-center justify-center space-x-2">
-          <span>Buka Aplikasi</span>
-          <i class="fa-solid fa-arrow-right-long text-[10px]"></i>
-        </button>
-      `;
-      grid.appendChild(card);
+      grid.appendChild(createAppCard(app, favoritesList));
     });
     section.appendChild(grid);
     container.appendChild(section);
@@ -938,45 +1079,89 @@ async function saveNewOrder() {
   }
 }
 
-// --- IFRAME VIEWER DENGAN TOP BAR COPY (BARU) ---
+// --- IFRAME VIEWER DENGAN TOP BAR AUTO-HIDE & FLOATING PILL ---
+function scheduleTopbarAutoHide() {
+  clearTimeout(topbarAutoHideTimer);
+  if (isTopbarPinned) return;
+  topbarAutoHideTimer = setTimeout(() => {
+    collapseTopbar();
+  }, 3500);
+}
+
+function collapseTopbar() {
+  clearTimeout(topbarAutoHideTimer);
+  const topbar = document.getElementById('viewer-topbar');
+  const pill = document.getElementById('viewer-floating-pill');
+  if (topbar) topbar.classList.add('-translate-y-full');
+  if (pill) pill.classList.remove('hidden-section');
+}
+
+function expandTopbar() {
+  const topbar = document.getElementById('viewer-topbar');
+  const pill = document.getElementById('viewer-floating-pill');
+  if (topbar) topbar.classList.remove('-translate-y-full');
+  if (pill) pill.classList.add('hidden-section');
+  scheduleTopbarAutoHide();
+}
+
+function togglePinTopbar() {
+  isTopbarPinned = !isTopbarPinned;
+  const btn = document.getElementById('btn-pin-topbar');
+  if (isTopbarPinned) {
+    clearTimeout(topbarAutoHideTimer);
+    btn.classList.remove('bg-slate-700/80', 'text-slate-300');
+    btn.classList.add('bg-blue-600', 'text-white');
+    showToast("Top bar dikunci (tidak auto-hide).", "info");
+  } else {
+    btn.classList.add('bg-slate-700/80', 'text-slate-300');
+    btn.classList.remove('bg-blue-600', 'text-white');
+    showToast("Auto-hide top bar diaktifkan.", "info");
+    scheduleTopbarAutoHide();
+  }
+}
+
 function openAppViewer(appId) {
  const app = appsData.find(item => item.id === appId);
  if (!app) return;
- isWorkingInApp = true; 
+ isWorkingInApp = true;
  clearTimeout(inactivityTimer);
- 
+
+ recordRecentApp(app.id);
+
  document.getElementById('viewer-title').innerText = app.name;
- 
+ const pillTitle = document.getElementById('pill-title');
+ if (pillTitle) pillTitle.innerText = app.name;
+
  // --- MULAI PERUBAHAN ANTI-CACHE ---
- // Membuat stempel waktu unik (milidetik)
  const timeStamp = new Date().getTime();
- 
- // Mengecek apakah URL sudah memiliki tanda tanya (?) sebelumnya
  const separator = app.url.includes('?') ? '&' : '?';
- 
- // Menggabungkan URL asli dengan stempel waktu
  const refreshUrl = app.url + separator + '_refresh=' + timeStamp;
- 
  document.getElementById('app-frame').src = refreshUrl;
  // --- SELESAI PERUBAHAN ---
- 
+
  activeAppCredentials = {
   user: app.username_app || "",
   pass: app.password_app || ""
  };
- 
+
  const boxUser = document.getElementById('box-user');
  const boxPass = document.getElementById('box-pass');
  boxUser.classList.toggle('hidden-section', !activeAppCredentials.user);
  boxPass.classList.toggle('hidden-section', !activeAppCredentials.pass);
  showSection('viewer-section');
+ expandTopbar();
 }
 
 function closeViewer() {
+  clearTimeout(topbarAutoHideTimer);
   document.getElementById('app-frame').src = "";
   isWorkingInApp = false; // AKTIFKAN KEMBALI hitung mundur 15 menit
   resetInactivityTimer();
   showSection('dashboard-section');
+  const keyword = (document.getElementById('search-input')?.value || "").toLowerCase().trim();
+  if (!keyword && appsData.length > 0) {
+    renderApps(appsData);
+  }
 }
 
 function copyCredential(type) {
@@ -1103,10 +1288,35 @@ async function openUserManager() {
   renderUsersTable();
 }
 
+function toggleTablePassword(idx) {
+  const maskEl = document.getElementById(`pass-mask-${idx}`);
+  const textEl = document.getElementById(`pass-text-${idx}`);
+  const iconEl = document.getElementById(`eye-table-${idx}`);
+  if (!maskEl || !textEl || !iconEl) return;
+  const isHidden = textEl.classList.contains('hidden-section');
+  if (isHidden) {
+    maskEl.classList.add('hidden-section');
+    textEl.classList.remove('hidden-section');
+    iconEl.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    maskEl.classList.remove('hidden-section');
+    textEl.classList.add('hidden-section');
+    iconEl.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+
+function copyUserPassword(idx) {
+  const user = usersData[idx];
+  if (!user || !user.password) return;
+  navigator.clipboard.writeText(user.password).then(() => {
+    showToast(`Password @${user.username} berhasil disalin!`);
+  });
+}
+
 function renderUsersTable() {
   const tbody = document.getElementById('users-table-body');
   tbody.innerHTML = "";
-  usersData.forEach(user => {
+  usersData.forEach((user, idx) => {
     const isSuper = user.role === "SuperAdmin";
     const isPending = user.status === "Pending";
     const statusBadge = isPending
@@ -1118,7 +1328,18 @@ function renderUsersTable() {
     row.innerHTML = `
       <td class="p-3 font-medium text-slate-200">${user.name}</td>
       <td class="p-3 text-slate-300">${user.username}</td>
-      <td class="p-3 font-mono text-amber-300 select-all">${user.password}</td>
+      <td class="p-3 whitespace-nowrap">
+        <div class="flex items-center space-x-2">
+          <span id="pass-mask-${idx}" class="font-mono text-slate-400 tracking-widest">••••••••</span>
+          <span id="pass-text-${idx}" class="hidden-section font-mono text-amber-300 select-all">${user.password}</span>
+          <button type="button" onclick="toggleTablePassword(${idx})" title="Lihat/Sembunyikan Password" class="text-slate-400 hover:text-slate-200 transition">
+            <i id="eye-table-${idx}" class="fa-solid fa-eye"></i>
+          </button>
+          <button type="button" onclick="copyUserPassword(${idx})" title="Salin Password" class="text-slate-400 hover:text-blue-400 transition">
+            <i class="fa-regular fa-copy"></i>
+          </button>
+        </div>
+      </td>
       <td class="p-3 text-slate-400">${user.role}</td>
       <td class="p-3">${statusBadge}</td>
       <td class="p-3 text-right space-x-2 whitespace-nowrap">
@@ -1154,7 +1375,14 @@ function openEditUser(username) {
   document.getElementById('edit-old-username').value = user.username;
   document.getElementById('edit-user-name').value = user.name;
   document.getElementById('edit-user-username').value = user.username;
-  document.getElementById('edit-user-password').value = user.password;
+  const passInput = document.getElementById('edit-user-password');
+  const passIcon = document.getElementById('eye-icon-edit-user');
+  passInput.value = user.password;
+  passInput.type = "password";
+  if (passIcon) {
+    passIcon.classList.remove('fa-eye-slash');
+    passIcon.classList.add('fa-eye');
+  }
   document.getElementById('edit-user-role').value = user.role || "Viewer";
   document.getElementById('edit-user-status').value = user.status || "Aktif";
   openModal('modal-edit-user');
